@@ -544,7 +544,6 @@
 
                     </div>
                 </div>
-                @endif
                 @empty
                 <div class="col-12">
                     <div class="text-center py-5" style="background-color: var(--light-brown); border-radius: 10px;">
@@ -564,17 +563,168 @@
                         </div>
                     </div>
                 </div>
+                @endif
                 @endforelse
             </div>
 
             <!-- Pagination -->
             @if($rooms->hasPages())
+                <div class="mt-5 pt-4">
+                    <nav aria-label="Navigation des chambres" class="d-flex justify-content-center">
+                        {{ $rooms->onEachSide(1)->links('vendor.pagination.bootstrap-5') }}
+                    </nav>
             <div class="mt-5 pt-4">
                 <nav aria-label="Navigation des chambres" class="d-flex justify-content-center">
                     {{ $rooms->onEachSide(1)->links('vendor.pagination.bootstrap-5') }}
                 </nav>
             </div>
             @endif
+        </div>
+    </section>
+
+    <!-- Section comparaison -->
+    <section class="py-5" style="background-color: var(--warm-beige);">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 style="color: var(--primary-brown);"><i class="fas fa-balance-scale me-2"></i>Comparez nos chambres</h2>
+                <p class="text-muted">Trouvez celle qui correspond parfaitement à vos besoins</p>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" style="border-color: var(--secondary-brown);">
+                    <thead style="background-color: var(--warm-beige);">
+                        <tr>
+                            <th style="color: var(--primary-brown);">Chambre</th>
+                            <th style="color: var(--primary-brown);">Type</th>
+                            <th style="color: var(--primary-brown);">Capacité</th>
+                            <th style="color: var(--primary-brown);">Surface</th>
+                            <th style="color: var(--primary-brown);">Prix/nuit</th>
+                            <th style="color: var(--primary-brown);">Équipements</th>
+                            <th style="color: var(--primary-brown);">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($rooms->take(3) as $room)
+                        <tr>
+                            <td>
+                                <strong>{{ $room->name }}</strong>
+                                <div class="small text-muted">Chambre {{ $room->number }}</div>
+                            </td>
+                            <td>{{ $room->type->name }}</td>
+                            <td class="text-center">
+                                <span class="badge" style="background-color: var(--primary-brown);">{{ $room->capacity }}</span>
+                            </td>
+                            <td>{{ $room->size ?? 'N/A' }} m²</td>
+                            <td><strong style="color: var(--primary-brown);">{{ number_format($room->price, 0, ',', ' ') }} FCFA</strong></td>
+                            <td>
+                                <div class="d-flex flex-wrap gap-1">
+                                    @foreach($room->facilities->take(3) as $facility)
+                                        <span class="badge bg-light text-dark" style="font-size: 0.7rem;">{{ $facility->name }}</span>
+                                    @endforeach
+                                </div>
+                            </td>
+                            <td>
+                                <a href="{{ route('frontend.room.details', $room->id) }}" class="btn btn-sm" style="background-color: var(--primary-brown); border-color: var(--primary-brown); color: white;">
+                                    <i class="fas fa-eye me-1"></i>Voir
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section statistiques -->
+    <section class="py-5" style="background-color: var(--warm-beige);">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 style="color: var(--primary-brown);">Notre Sélection en Chiffres</h2>
+                <p class="text-muted">La qualité au service de votre confort</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                             style="width: 80px; height: 80px; background-color: var(--primary-brown);">
+                            <i class="fas fa-bed fa-2x text-white"></i>
+                        </div>
+                        <h3 style="color: var(--primary-brown);">{{ $totalRooms ?? 0 }}</h3>
+                        <h5 style="color: var(--primary-brown);">Chambres</h5>
+                        <p class="text-muted">Types variés pour tous vos besoins</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                             style="width: 80px; height: 80px; background-color: #2196F3;">
+                            <i class="fas fa-check-circle fa-2x text-white"></i>
+                        </div>
+                        <h3 style="color: #2196F3;">{{ $availableCount ?? 0 }}</h3>
+                        <h5 style="color: #2196F3;">Disponibles</h5>
+                        <p class="text-muted">Chambres prêtes à vous accueillir</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                             style="width: 80px; height: 80px; background-color: #FF9800;">
+                            <i class="fas fa-users fa-2x text-white"></i>
+                        </div>
+                        <h3 style="color: #FF9800;">{{ $averageCapacity ?? 2 }}</h3>
+                        <h5 style="color: #FF9800;">Capacité moyenne</h5>
+                        <p class="text-muted">Personnes par chambre</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center">
+                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                             style="width: 80px; height: 80px; background-color: #9C27B0;">
+                            <i class="fas fa-star fa-2x text-white"></i>
+                        </div>
+                        <h3 style="color: #9C27B0;">4.8/5</h3>
+                        <h5 style="color: #9C27B0;">Satisfaction</h5>
+                        <p class="text-muted">Note moyenne de nos clients</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section CTA -->
+    <section class="py-5">
+        <div class="container">
+            <div class="card border-0 shadow-sm" style="background: linear-gradient(135deg, var(--warm-beige), var(--light-brown)); border: 1px solid var(--secondary-brown);">
+                <div class="card-body p-5">
+                    <div class="row align-items-center">
+                        <div class="col-lg-8">
+                            <h3 style="color: var(--primary-brown);">
+                                <i class="fas fa-question-circle me-2"></i>Besoin d'aide pour choisir ?
+                            </h3>
+                            <p class="text-muted mb-0">Notre équipe est à votre disposition pour vous conseiller et vous aider à trouver la chambre parfaite pour votre séjour.</p>
+                            <div class="mt-3">
+                                <a href="https://wa.me/229XXXXXXXXX" target="_blank" class="btn me-2" style="background-color: var(--primary-brown); border-color: var(--primary-brown); color: white;">
+                                    <i class="fab fa-whatsapp me-2"></i>WhatsApp
+                                </a>
+                                <a href="mailto:reservations@lecactushotel.bj" class="btn me-2" style="color: var(--primary-brown); border-color: var(--primary-brown); background-color: transparent;">
+                                    <i class="fas fa-envelope me-2"></i>Email
+                                </a>
+                                <a href="tel:+229XXXXXXXXX" class="btn" style="color: var(--primary-brown); border-color: var(--primary-brown); background-color: transparent;">
+                                    <i class="fas fa-phone-alt me-2"></i>Appeler
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                            <div class="d-grid">
+                                <a href="{{ route('frontend.contact') }}" class="btn btn-lg" style="background-color: var(--primary-brown); border-color: var(--primary-brown); color: white;">
+                                    <i class="fas fa-calendar-check me-2"></i> Demander un devis
+                                </a>
+                                <small class="text-muted mt-2">Réponse sous 24h maximum</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 @endsection
@@ -673,9 +823,9 @@
     outline: none !important;
 }
 
-/* ═════════════════════════════════════
+/* ═══════════════════════════════════════
    VUE LISTE — layout horizontal propre
-════════════════════════════════════════ */
+═══════════════════════════════════════ */
 
 /* Chaque item prend toute la largeur */
 #rooms-grid.view-list .room-item {
@@ -759,10 +909,6 @@
 
 .room-item:nth-child(1) { animation-delay: 0.05s; }
 .room-item:nth-child(2) { animation-delay: 0.10s; }
-.room-item:nth-child(3) { animation-delay: 0.15s; }
-.room-item:nth-child(4) { animation-delay: 0.20s; }
-.room-item:nth-child(5) { animation-delay: 0.25s; }
-.room-item:nth-child(6) { animation-delay: 0.30s; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
@@ -1077,61 +1223,61 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     /* ── Styles pour les icônes sur les images ── */
-    .favorite-btn:hover {
-        background: var(--primary-brown) !important;
-        color: white !important;
-        transform: scale(1.1);
-        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
-    }
+.favorite-btn:hover {
+    background: var(--primary-brown) !important;
+    color: white !important;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
+}
 
-    .favorite-btn.active {
-        background: var(--primary-brown) !important;
-        color: white !important;
-    }
+.favorite-btn.active {
+    background: var(--primary-brown) !important;
+    color: white !important;
+}
 
-    .favorite-btn.active i {
-        color: white !important;
-    }
+.favorite-btn.active i {
+    color: white !important;
+}
 
-    .room-status-badge .badge {
-        backdrop-filter: blur(10px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        font-size: 0.75rem;
-        letter-spacing: 0.5px;
-    }
+.room-status-badge .badge {
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
 
-    /* Animation subtile pour les badges */
-    .room-card:hover .room-status-badge .badge {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
-    }
+/* Animation subtile pour les badges */
+.room-card:hover .room-status-badge .badge {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
+}
 
-    /* Style pour les badges d'images multiples */
-    .room-image-container .badge.bg-dark {
-        background: rgba(139, 69, 19, 0.8) !important;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
+/* Style pour les badges d'images multiples */
+.room-image-container .badge.bg-dark {
+    background: rgba(139, 69, 19, 0.8) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
 
-    /* Amélioration du hover sur les cartes */
-    .room-card:hover {
-        box-shadow: 0 12px 32px rgba(139, 69, 19, 0.15) !important;
-    }
+/* Amélioration du hover sur les cartes */
+.room-card:hover {
+    box-shadow: 0 12px 32px rgba(139, 69, 19, 0.15) !important;
+}
 
-    /* Animation pour le bouton favoris */
-    @keyframes heartBeat {
-        0% { transform: scale(1); }
-        25% { transform: scale(1.2); }
-        50% { transform: scale(1); }
-        75% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-    }
+/* Animation pour le bouton favoris */
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    25% { transform: scale(1.2); }
+    50% { transform: scale(1); }
+    75% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
 
-    .favorite-btn:active {
-        animation: heartBeat 0.3s ease;
-    }
+.favorite-btn:active {
+    animation: heartBeat 0.3s ease;
+}
 
-    /* ── Toasts ── */
+/* ── Toasts ── */
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         toast.className = `toast align-items-center text-bg-${type} border-0`;

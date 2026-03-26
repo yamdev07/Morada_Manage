@@ -1,5 +1,5 @@
 @extends('template.master')
-@section('title', 'Add User')
+@section('title', 'Ajouter un utilisateur - Morada Lodge')
 
 @section('content')
     <div class="user-form-container">
@@ -94,7 +94,7 @@
                                                         id="email"
                                                         name="email" 
                                                         value="{{ old('email') }}"
-                                                        placeholder="exemple@hotel.com"
+                                                        placeholder="exemple@moradalodge.com"
                                                         autocomplete="email">
                                                 </div>
                                                 @error('email')
@@ -233,37 +233,38 @@
 @push('styles')
 <style>
 /* ========================================
-   VARIABLES & BASE
+   VARIABLES MORADA LODGE (Marron)
    ======================================== */
 :root {
-    --primary-color: #1A472A;
-    --primary-light: #2E5C3F;
-    --primary-dark: #0F2918;
-    --accent-color: #C9A961;
+    --primary-color: #8B4513;
+    --primary-light: #A0522D;
+    --primary-dark: #654321;
+    --primary-soft: rgba(139, 69, 19, 0.08);
+    --accent-color: #D2B48C;
     --success-color: #22C55E;
     --danger-color: #EF4444;
     --warning-color: #F59E0B;
     --info-color: #3B82F6;
     
-    --bg-light: #F8FAF9;
+    --bg-light: #FCF8F3;
     --bg-white: #FFFFFF;
-    --text-dark: #1A1A1A;
-    --text-gray: #6B7280;
-    --text-light: #9CA3AF;
-    --border-color: #E5E7EB;
+    --text-dark: #2C1810;
+    --text-gray: #704838;
+    --text-light: #D2B48C;
+    --border-color: #F5E6D3;
     
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
-    --shadow-sm: 0 2px 8px rgba(26, 71, 42, 0.08);
-    --shadow-md: 0 8px 24px rgba(26, 71, 42, 0.12);
-    --shadow-lg: 0 16px 48px rgba(26, 71, 42, 0.16);
+    --shadow-sm: 0 2px 8px rgba(139, 69, 19, 0.08);
+    --shadow-md: 0 8px 24px rgba(139, 69, 19, 0.12);
+    --shadow-lg: 0 16px 48px rgba(139, 69, 19, 0.16);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
     background: var(--bg-light);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'DM Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 .user-form-container {
@@ -322,11 +323,12 @@ body {
     box-shadow: var(--shadow-md);
     overflow: hidden;
     margin-bottom: 30px;
+    border: 1px solid var(--border-color);
 }
 
 .form-card-header {
     padding: 30px;
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     color: var(--bg-white);
     display: flex;
     align-items: center;
@@ -425,7 +427,7 @@ body {
 .input-icon {
     position: absolute;
     left: 16px;
-    color: var(--text-gray);
+    color: var(--text-light);
     font-size: 14px;
     pointer-events: none;
     z-index: 2;
@@ -447,7 +449,7 @@ body {
 .form-control-modern:focus,
 .form-select-modern:focus {
     border-color: var(--primary-color);
-    box-shadow: 0 0 0 4px rgba(26, 71, 42, 0.1);
+    box-shadow: 0 0 0 4px var(--primary-soft);
 }
 
 .form-control-modern::placeholder {
@@ -475,7 +477,7 @@ body {
     right: 16px;
     background: none;
     border: none;
-    color: var(--text-gray);
+    color: var(--text-light);
     cursor: pointer;
     padding: 0;
     font-size: 14px;
@@ -519,15 +521,15 @@ body {
     align-items: start;
     gap: 12px;
     padding: 15px;
-    background: rgba(59, 130, 246, 0.05);
-    border-left: 3px solid var(--info-color);
+    background: var(--primary-soft);
+    border-left: 3px solid var(--primary-color);
     border-radius: var(--radius-sm);
     font-size: 0.9rem;
     color: var(--text-dark);
 }
 
 .alert-info i {
-    color: var(--info-color);
+    color: var(--primary-color);
     font-size: 16px;
     margin-top: 2px;
     flex-shrink: 0;
@@ -561,7 +563,7 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
     color: var(--bg-white);
 }
 
@@ -578,25 +580,26 @@ body {
 
 .btn-secondary:hover {
     background: var(--bg-light);
-    border-color: var(--text-gray);
+    border-color: var(--primary-light);
+    color: var(--primary-color);
 }
 
 /* ========================================
    INFO CARD
    ======================================== */
 .info-card {
-    background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+    background: linear-gradient(135deg, #FEF5E8, #FCEBD8);
     border-radius: var(--radius-lg);
     padding: 25px;
     display: flex;
     gap: 20px;
-    border: 2px solid #FCD34D;
+    border: 2px solid var(--accent-color);
 }
 
 .info-card-icon {
     width: 50px;
     height: 50px;
-    background: var(--warning-color);
+    background: var(--primary-color);
     border-radius: var(--radius-md);
     display: flex;
     align-items: center;
@@ -701,14 +704,14 @@ body {
 /* Custom Select Arrow */
 .form-select-modern {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236B7280' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B4513' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 16px center;
     padding-right: 45px;
 }
 
 .form-select-modern:focus {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%231A472A' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238B4513' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
 }
 </style>
 @endpush
@@ -782,7 +785,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const password = this.value;
             const strength = calculatePasswordStrength(password);
             
-            // You can add a visual password strength indicator here
             if (password.length > 0) {
                 this.setAttribute('data-strength', strength);
             } else {

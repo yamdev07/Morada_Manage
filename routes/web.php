@@ -205,6 +205,8 @@ Route::group(['middleware' => ['auth', 'checkrole:Super,Admin,Receptionist', 'ad
             // === NOUVELLES ROUTES POUR MAINTENANCE ===
             Route::post('/{room}/maintenance-toggle', [RoomController::class, 'toggleMaintenance'])
                 ->name('maintenance.toggle');
+            Route::post('/{room}/mark-dirty', [RoomController::class, 'markDirty'])
+                ->name('mark-dirty');
             Route::get('/{room}/status-history', [RoomController::class, 'statusHistory'])
                 ->name('status.history');
             Route::post('/sync-statuses', [RoomController::class, 'syncStatuses'])
@@ -852,4 +854,4 @@ Route::fallback(function () {
     }
 
     return redirect()->route('login.index')->with('error', 'Page non trouvée. Veuillez vous connecter.');
-});
+});   
