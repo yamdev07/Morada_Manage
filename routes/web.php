@@ -403,7 +403,8 @@ Route::group(['middleware' => ['auth', 'checkrole:Super,Admin,Customer,Housekeep
     Route::prefix('profile')->name('profile.')->group(function () {
         // Routes sans paramètres d'abord
         Route::get('/', [ProfileController::class, 'index'])->name('index');
-        Route::get('/edit', [ProfileController::class, 'edit'])->name('edit');
+        // 'edit' n'existe pas dans le contrôleur : la page profil (index) contient déjà les formulaires d'édition.
+        Route::get('/edit', [ProfileController::class, 'index'])->name('edit');
         Route::put('/update', [ProfileController::class, 'update'])->name('update');
         Route::post('/update-info', [ProfileController::class, 'updateInfo'])->name('update.info');
         Route::post('/update-password', [ProfileController::class, 'updatePassword'])->name('update.password');
@@ -505,7 +506,8 @@ Route::group(['middleware' => ['auth', 'checkrole:Super,Admin,Receptionist']], f
         });
     });
 
-    Route::get('/checkin-dashboard', [DashboardController::class, 'checkinDashboard'])->name('checkin.dashboard');
+    // La vue dédiée 'checkin.dashboard' n'a jamais été créée : on redirige vers la page check-in.
+    Route::redirect('/checkin-dashboard', '/checkin')->name('checkin.dashboard');
 
     // ==================== CAISSE RÉCEPTION ====================
     // ⚠️ CES ROUTES ONT ÉTÉ SUPPRIMÉES CAR ELLES ÉTAIENT EN DOUBLE

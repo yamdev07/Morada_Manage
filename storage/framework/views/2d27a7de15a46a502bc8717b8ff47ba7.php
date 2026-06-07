@@ -1,6 +1,6 @@
-@extends('template.master')
-@section('title', 'Statistiques des Activités')
-@section('content')
+
+<?php $__env->startSection('title', 'Statistiques des Activités'); ?>
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid py-4">
     <div class="row mb-4">
         <div class="col-12">
@@ -14,7 +14,7 @@
                             </h4>
                             <p class="text-muted mb-0">Analyse des logs d'activité</p>
                         </div>
-                        <a href="{{ route('activity.index') }}" class="btn btn-outline-secondary btn-sm">
+                        <a href="<?php echo e(route('activity.index')); ?>" class="btn btn-outline-secondary btn-sm">
                             <i class="fas fa-arrow-left me-1"></i> Retour au journal
                         </a>
                     </div>
@@ -31,7 +31,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h5 class="text-muted mb-0">Total</h5>
-                            <h2 class="mt-2">{{ number_format($stats['total']) }}</h2>
+                            <h2 class="mt-2"><?php echo e(number_format($stats['total'])); ?></h2>
                         </div>
                         <div class="avatar bg-primary bg-opacity-10 rounded-circle p-3">
                             <i class="fas fa-history text-primary fa-2x"></i>
@@ -48,7 +48,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h5 class="text-muted mb-0">Aujourd'hui</h5>
-                            <h2 class="mt-2">{{ number_format($stats['today']) }}</h2>
+                            <h2 class="mt-2"><?php echo e(number_format($stats['today'])); ?></h2>
                         </div>
                         <div class="avatar bg-success bg-opacity-10 rounded-circle p-3">
                             <i class="fas fa-calendar-day text-success fa-2x"></i>
@@ -65,7 +65,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h5 class="text-muted mb-0">Cette semaine</h5>
-                            <h2 class="mt-2">{{ number_format($stats['this_week']) }}</h2>
+                            <h2 class="mt-2"><?php echo e(number_format($stats['this_week'])); ?></h2>
                         </div>
                         <div class="avatar bg-warning bg-opacity-10 rounded-circle p-3">
                             <i class="fas fa-calendar-week text-warning fa-2x"></i>
@@ -82,7 +82,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h5 class="text-muted mb-0">Ce mois</h5>
-                            <h2 class="mt-2">{{ number_format($stats['this_month']) }}</h2>
+                            <h2 class="mt-2"><?php echo e(number_format($stats['this_month'])); ?></h2>
                         </div>
                         <div class="avatar bg-info bg-opacity-10 rounded-circle p-3">
                             <i class="fas fa-calendar-alt text-info fa-2x"></i>
@@ -114,11 +114,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
+                                <?php
                                     $total = $stats['total'];
-                                @endphp
-                                @foreach($stats['by_event'] as $event => $count)
-                                    @php
+                                ?>
+                                <?php $__currentLoopData = $stats['by_event']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $event => $count): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php
                                         $percentage = $total > 0 ? round(($count / $total) * 100, 1) : 0;
                                         $color = match($event) {
                                             'created' => 'success',
@@ -134,21 +134,21 @@
                                             'restored' => 'Restaurations',
                                             default => ucfirst($event)
                                         };
-                                    @endphp
+                                    ?>
                                     <tr>
                                         <td>
-                                            <span class="badge bg-{{ $color }}">{{ $label }}</span>
+                                            <span class="badge bg-<?php echo e($color); ?>"><?php echo e($label); ?></span>
                                         </td>
-                                        <td>{{ number_format($count) }}</td>
-                                        <td>{{ $percentage }}%</td>
+                                        <td><?php echo e(number_format($count)); ?></td>
+                                        <td><?php echo e($percentage); ?>%</td>
                                         <td>
                                             <div class="progress" style="height: 6px;">
-                                                <div class="progress-bar bg-{{ $color }}" role="progressbar" 
-                                                     style="width: {{ $percentage }}%;"></div>
+                                                <div class="progress-bar bg-<?php echo e($color); ?>" role="progressbar" 
+                                                     style="width: <?php echo e($percentage); ?>%;"></div>
                                             </div>
                                         </td>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
@@ -173,29 +173,30 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($stats['by_user'] as $userStat)
-                                    @php
+                                <?php $__currentLoopData = $stats['by_user']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $userStat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php
                                         $percentage = $total > 0 ? round(($userStat->count / $total) * 100, 1) : 0;
-                                    @endphp
+                                    ?>
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center">
                                                 <div class="avatar-sm bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2">
-                                                    {{ substr($userStat->causer?->name ?? 'Système', 0, 1) }}
+                                                    <?php echo e(substr($userStat->causer?->name ?? 'Système', 0, 1)); ?>
+
                                                 </div>
-                                                <span>{{ $userStat->causer?->name ?? 'Système' }}</span>
+                                                <span><?php echo e($userStat->causer?->name ?? 'Système'); ?></span>
                                             </div>
                                         </td>
-                                        <td>{{ number_format($userStat->count) }}</td>
+                                        <td><?php echo e(number_format($userStat->count)); ?></td>
                                         <td>
                                             <div class="progress" style="height: 6px;">
                                                 <div class="progress-bar bg-primary" role="progressbar" 
-                                                     style="width: {{ $percentage }}%;"></div>
+                                                     style="width: <?php echo e($percentage); ?>%;"></div>
                                             </div>
-                                            <small class="text-muted">{{ $percentage }}%</small>
+                                            <small class="text-muted"><?php echo e($percentage); ?>%</small>
                                         </td>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
@@ -220,25 +221,25 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($stats['by_model'] as $modelStat)
-                                    @php
+                                <?php $__currentLoopData = $stats['by_model']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $modelStat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php
                                         $percentage = $total > 0 ? round(($modelStat->count / $total) * 100, 1) : 0;
                                         $modelName = class_basename($modelStat->subject_type);
-                                    @endphp
+                                    ?>
                                     <tr>
                                         <td>
-                                            <code>{{ $modelName }}</code>
+                                            <code><?php echo e($modelName); ?></code>
                                         </td>
-                                        <td>{{ number_format($modelStat->count) }}</td>
+                                        <td><?php echo e(number_format($modelStat->count)); ?></td>
                                         <td>
                                             <div class="progress" style="height: 6px;">
                                                 <div class="progress-bar bg-info" role="progressbar" 
-                                                     style="width: {{ $percentage }}%;"></div>
+                                                     style="width: <?php echo e($percentage); ?>%;"></div>
                                             </div>
-                                            <small class="text-muted">{{ $percentage }}%</small>
+                                            <small class="text-muted"><?php echo e($percentage); ?>%</small>
                                         </td>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
@@ -266,7 +267,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @php
+                                <?php
                                     $days = [];
                                     for ($i = 6; $i >= 0; $i--) {
                                         $date = now()->subDays($i);
@@ -283,38 +284,39 @@
                                     foreach ($recentActivities as $date => $count) {
                                         $days[$date] = $count;
                                     }
-                                @endphp
+                                ?>
                                 
-                                @foreach($days as $date => $count)
-                                    @php
+                                <?php $__currentLoopData = $days; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $date => $count): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php
                                         $dayName = \Carbon\Carbon::parse($date)->translatedFormat('l');
                                         $formattedDate = \Carbon\Carbon::parse($date)->format('d/m');
                                         $isToday = $date == now()->format('Y-m-d');
-                                    @endphp
-                                    <tr class="{{ $isToday ? 'table-active' : '' }}">
+                                    ?>
+                                    <tr class="<?php echo e($isToday ? 'table-active' : ''); ?>">
                                         <td>
-                                            {{ $dayName }}
-                                            <small class="text-muted d-block">{{ $formattedDate }}</small>
+                                            <?php echo e($dayName); ?>
+
+                                            <small class="text-muted d-block"><?php echo e($formattedDate); ?></small>
                                         </td>
                                         <td>
-                                            <span class="fw-semibold">{{ $count }}</span>
+                                            <span class="fw-semibold"><?php echo e($count); ?></span>
                                         </td>
                                         <td>
-                                            @if($count > 0)
+                                            <?php if($count > 0): ?>
                                                 <div class="progress" style="height: 6px;">
-                                                    @php
+                                                    <?php
                                                         $maxCount = max($days);
                                                         $width = $maxCount > 0 ? ($count / $maxCount) * 100 : 0;
-                                                    @endphp
+                                                    ?>
                                                     <div class="progress-bar bg-success" role="progressbar" 
-                                                         style="width: {{ $width }}%;"></div>
+                                                         style="width: <?php echo e($width); ?>%;"></div>
                                                 </div>
-                                            @else
+                                            <?php else: ?>
                                                 <span class="text-muted small">Aucune</span>
-                                            @endif
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                     </div>
@@ -337,16 +339,16 @@
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Moyenne quotidienne</span>
                                     <span class="badge bg-primary rounded-pill">
-                                        {{ $total > 0 ? number_format($total / 30, 1) : 0 }}/jour
+                                        <?php echo e($total > 0 ? number_format($total / 30, 1) : 0); ?>/jour
                                     </span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Hier</span>
-                                    <span class="badge bg-secondary rounded-pill">{{ $stats['yesterday'] }}</span>
+                                    <span class="badge bg-secondary rounded-pill"><?php echo e($stats['yesterday']); ?></span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Utilisateurs actifs (30j)</span>
-                                    <span class="badge bg-success rounded-pill">{{ $stats['by_user']->count() }}</span>
+                                    <span class="badge bg-success rounded-pill"><?php echo e($stats['by_user']->count()); ?></span>
                                 </li>
                             </ul>
                         </div>
@@ -354,18 +356,18 @@
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Modèles suivis</span>
-                                    <span class="badge bg-info rounded-pill">{{ $stats['by_model']->count() }}</span>
+                                    <span class="badge bg-info rounded-pill"><?php echo e($stats['by_model']->count()); ?></span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Taux de création</span>
                                     <span class="badge bg-warning rounded-pill">
-                                        {{ $total > 0 ? number_format(($stats['by_event']['created'] ?? 0) / $total * 100, 1) : 0 }}%
+                                        <?php echo e($total > 0 ? number_format(($stats['by_event']['created'] ?? 0) / $total * 100, 1) : 0); ?>%
                                     </span>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <span>Taux de modification</span>
                                     <span class="badge bg-warning rounded-pill">
-                                        {{ $total > 0 ? number_format(($stats['by_event']['updated'] ?? 0) / $total * 100, 1) : 0 }}%
+                                        <?php echo e($total > 0 ? number_format(($stats['by_event']['updated'] ?? 0) / $total * 100, 1) : 0); ?>%
                                     </span>
                                 </li>
                             </ul>
@@ -373,7 +375,7 @@
                     </div>
                 </div>
                 <div class="card-footer text-center">
-                    <a href="{{ route('activity.export', 'csv') }}" class="btn btn-outline-primary btn-sm">
+                    <a href="<?php echo e(route('activity.export', 'csv')); ?>" class="btn btn-outline-primary btn-sm">
                         <i class="fas fa-download me-1"></i> Exporter les statistiques
                     </a>
                 </div>
@@ -382,7 +384,7 @@
     </div>
 </div>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
 .avatar {
     width: 50px;
@@ -415,9 +417,9 @@
     padding: 0.75rem 0;
 }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 // Simple animation for counters
 document.addEventListener('DOMContentLoaded', function() {
@@ -444,5 +446,6 @@ function animateCounter(element, target) {
     }, 20);
 }
 </script>
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('template.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\HP ELITEBOOK\Desktop\dev\HotelManagement\resources\views/activity/statistics.blade.php ENDPATH**/ ?>
