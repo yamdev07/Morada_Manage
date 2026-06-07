@@ -17,7 +17,11 @@
     <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
     
-    <link rel="icon" href="<?php echo e(asset('img/logo/logo_ancien.jpg')); ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?php echo e(asset('favicon-32x32.png')); ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?php echo e(asset('favicon-16x16.png')); ?>">
+    <link rel="apple-touch-icon" href="<?php echo e(asset('apple-touch-icon.png')); ?>">
+    <link rel="manifest" href="<?php echo e(asset('site.webmanifest')); ?>">
+    <link rel="shortcut icon" href="<?php echo e(asset('favicon.ico')); ?>">
     
     
     <?php echo app('Illuminate\Foundation\Vite')('resources/sass/app.scss'); ?>

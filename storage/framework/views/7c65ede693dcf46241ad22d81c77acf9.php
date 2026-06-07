@@ -604,8 +604,8 @@ body {
 .hero-modern {
     position: relative;
     min-height: 100vh;
-    background: linear-gradient(135deg, rgba(101, 67, 33, 0.8) 0%, rgba(139, 69, 19, 0.6) 100%), 
-                url('https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+    background: linear-gradient(135deg, rgba(101, 67, 33, 0.8) 0%, rgba(139, 69, 19, 0.6) 100%),
+                url('<?php echo e(asset('img/accueil.jpg')); ?>');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

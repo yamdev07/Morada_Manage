@@ -593,10 +593,7 @@ body {
                             <div>
                                 <div class="stat-label">Price</div>
                                 <div class="stat-value" style="font-size:18px;font-family:'IBM Plex Mono',monospace">
-                                    {{ number_format($room->price, 0, ',', ' ') }}
-                                </div>
-                                <div class="stat-sub">
-                                    ≈ {{ number_format($room->price / 655, 2, ',', ' ') }} €
+                                    {{ number_format($room->price, 0, ',', ' ') }} FCFA
                                 </div>
                             </div>
                         </div>

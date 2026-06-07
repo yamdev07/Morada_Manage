@@ -1,6 +1,6 @@
-@extends('template.master')
-@section('title', 'Restaurant - Commandes')
-@section('content')
+
+<?php $__env->startSection('title', 'Restaurant - Commandes'); ?>
+<?php $__env->startSection('content'); ?>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h3 class="mb-0">Gestion des Commandes</h3>
@@ -19,7 +19,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted mb-1">En attente</h6>
-                        <h3 class="mb-0 text-warning">{{ $pendingOrders ?? 0 }}</h3>
+                        <h3 class="mb-0 text-warning"><?php echo e($pendingOrders ?? 0); ?></h3>
                     </div>
                     <div class="bg-warning bg-opacity-10 p-3 rounded">
                         <i class="fas fa-clock fa-2x text-warning"></i>
@@ -35,7 +35,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted mb-1">Livrées</h6>
-                        <h3 class="mb-0 text-success">{{ $deliveredOrders ?? 0 }}</h3>
+                        <h3 class="mb-0 text-success"><?php echo e($deliveredOrders ?? 0); ?></h3>
                     </div>
                     <div class="bg-success bg-opacity-10 p-3 rounded">
                         <i class="fas fa-check-circle fa-2x text-success"></i>
@@ -51,7 +51,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted mb-1">CA (auj.)</h6>
-                        <h3 class="mb-0 text-primary">{{ number_format($todayRevenue ?? 0, 0, ',', ' ') }} FCFA</h3>
+                        <h3 class="mb-0 text-primary"><?php echo e(number_format($todayRevenue ?? 0, 0, ',', ' ')); ?> FCFA</h3>
                     </div>
                     <div class="bg-primary bg-opacity-10 p-3 rounded">
                         <i class="fas fa-coins fa-2x text-primary"></i>
@@ -67,7 +67,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted mb-1">Mois</h6>
-                        <h3 class="mb-0 text-info">{{ $monthlyOrders ?? 0 }}</h3>
+                        <h3 class="mb-0 text-info"><?php echo e($monthlyOrders ?? 0); ?></h3>
                     </div>
                     <div class="bg-info bg-opacity-10 p-3 rounded">
                         <i class="fas fa-calendar-alt fa-2x text-info"></i>
@@ -126,42 +126,43 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @forelse($orders as $order)
-                    <tr data-status="{{ $order->status }}">
-                        <td><strong>#{{ str_pad($order->id, 6, '0', STR_PAD_LEFT) }}</strong></td>
+                    <?php $__empty_1 = true; $__currentLoopData = $orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+                    <tr data-status="<?php echo e($order->status); ?>">
+                        <td><strong>#<?php echo e(str_pad($order->id, 6, '0', STR_PAD_LEFT)); ?></strong></td>
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0 me-2">
                                     <i class="fas fa-user-circle text-primary"></i>
                                 </div>
                                 <div class="flex-grow-1">
-                                    {{ $order->customer_name ?? 'Client non spécifié' }}
-                                    @if($order->customer_phone)
-                                    <br><small class="text-muted">{{ $order->customer_phone }}</small>
-                                    @endif
+                                    <?php echo e($order->customer_name ?? 'Client non spécifié'); ?>
+
+                                    <?php if($order->customer_phone): ?>
+                                    <br><small class="text-muted"><?php echo e($order->customer_phone); ?></small>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </td>
                         <td>
-                            @if($order->room_id)
-                            <span class="badge bg-info">Ch. {{ $order->room_number }}</span>
-                            @else
+                            <?php if($order->room_id): ?>
+                            <span class="badge bg-info">Ch. <?php echo e($order->room_number); ?></span>
+                            <?php else: ?>
                             <span class="text-muted">-</span>
-                            @endif
+                            <?php endif; ?>
                         </td>
                         <td>
                             <button class="btn btn-sm btn-outline-info view-items" 
-                                    data-order-id="{{ $order->id }}"
+                                    data-order-id="<?php echo e($order->id); ?>"
                                     data-bs-toggle="modal" 
                                     data-bs-target="#orderDetailsModal">
-                                {{ $order->items_count ?? 0 }} article(s)
+                                <?php echo e($order->items_count ?? 0); ?> article(s)
                             </button>
                         </td>
                         <td>
-                            <strong class="text-primary">{{ number_format($order->total, 0, ',', ' ') }} FCFA</strong>
+                            <strong class="text-primary"><?php echo e(number_format($order->total, 0, ',', ' ')); ?> FCFA</strong>
                         </td>
                         <td>
-                            @php
+                            <?php
                                 $statusColors = [
                                     'pending' => 'warning',
                                     'preparing' => 'info',
@@ -176,13 +177,15 @@
                                     'paid' => 'Payé',
                                     'cancelled' => 'Annulé'
                                 ];
-                            @endphp
-                            <span class="badge bg-{{ $statusColors[$order->status] ?? 'secondary' }}">
-                                {{ $statusLabels[$order->status] ?? $order->status }}
+                            ?>
+                            <span class="badge bg-<?php echo e($statusColors[$order->status] ?? 'secondary'); ?>">
+                                <?php echo e($statusLabels[$order->status] ?? $order->status); ?>
+
                             </span>
                         </td>
                         <td>
-                            {{ $order->created_at->format('d/m/Y H:i') }}
+                            <?php echo e($order->created_at->format('d/m/Y H:i')); ?>
+
                         </td>
                         <td>
                             <div class="dropdown">
@@ -191,34 +194,34 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#orderDetailsModal" data-order-id="{{ $order->id }}">
+                                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#orderDetailsModal" data-order-id="<?php echo e($order->id); ?>">
                                             <i class="fas fa-eye me-2"></i> Détails
                                         </a>
                                     </li>
-                                    @if($order->status == 'pending')
+                                    <?php if($order->status == 'pending'): ?>
                                     <li>
-                                        <a class="dropdown-item change-status" href="#" data-order-id="{{ $order->id }}" data-status="preparing">
+                                        <a class="dropdown-item change-status" href="#" data-order-id="<?php echo e($order->id); ?>" data-status="preparing">
                                             <i class="fas fa-play me-2"></i> Préparer
                                         </a>
                                     </li>
-                                    @endif
-                                    @if($order->status == 'preparing')
+                                    <?php endif; ?>
+                                    <?php if($order->status == 'preparing'): ?>
                                     <li>
-                                        <a class="dropdown-item change-status" href="#" data-order-id="{{ $order->id }}" data-status="delivered">
+                                        <a class="dropdown-item change-status" href="#" data-order-id="<?php echo e($order->id); ?>" data-status="delivered">
                                             <i class="fas fa-check me-2"></i> Livrer
                                         </a>
                                     </li>
-                                    @endif
-                                    @if(in_array($order->status, ['delivered', 'pending']))
+                                    <?php endif; ?>
+                                    <?php if(in_array($order->status, ['delivered', 'pending'])): ?>
                                     <li>
-                                        <a class="dropdown-item change-status" href="#" data-order-id="{{ $order->id }}" data-status="paid">
+                                        <a class="dropdown-item change-status" href="#" data-order-id="<?php echo e($order->id); ?>" data-status="paid">
                                             <i class="fas fa-coins me-2"></i> Marquer payé
                                         </a>
                                     </li>
-                                    @endif
+                                    <?php endif; ?>
                                     <li><hr class="dropdown-divider"></li>
                                     <li>
-                                        <a class="dropdown-item text-danger cancel-order" href="#" data-order-id="{{ $order->id }}">
+                                        <a class="dropdown-item text-danger cancel-order" href="#" data-order-id="<?php echo e($order->id); ?>">
                                             <i class="fas fa-times me-2"></i> Annuler
                                         </a>
                                     </li>
@@ -226,7 +229,7 @@
                             </div>
                         </td>
                     </tr>
-                    @empty
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                     <tr>
                         <td colspan="8" class="text-center py-5">
                             <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
@@ -237,17 +240,18 @@
                             </button>
                         </td>
                     </tr>
-                    @endforelse
+                    <?php endif; ?>
                 </tbody>
             </table>
         </div>
 
         <!-- Pagination -->
-        @if($orders->hasPages())
+        <?php if($orders->hasPages()): ?>
         <div class="p-3 border-top">
-            {{ $orders->links() }}
+            <?php echo e($orders->links()); ?>
+
         </div>
-        @endif
+        <?php endif; ?>
     </div>
 </div>
 
@@ -282,19 +286,20 @@
                 <h5 class="modal-title">Nouvelle Commande</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('restaurant.orders.store') }}" method="POST" id="newOrderForm">
-                @csrf
+            <form action="<?php echo e(route('restaurant.orders.store')); ?>" method="POST" id="newOrderForm">
+                <?php echo csrf_field(); ?>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Client <span class="text-danger">*</span></label>
                             <select class="form-select" name="customer_id" id="newCustomerSelect" required>
                                 <option value="">Sélectionner un client</option>
-                                @foreach($customers ?? [] as $customer)
-                                <option value="{{ $customer->id }}" data-room="{{ $customer->room_number ?? '' }}">
-                                    {{ $customer->name }} - {{ $customer->room_number ? 'Chambre ' . $customer->room_number : 'Externe' }}
+                                <?php $__currentLoopData = $customers ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($customer->id); ?>" data-room="<?php echo e($customer->room_number ?? ''); ?>">
+                                    <?php echo e($customer->name); ?> - <?php echo e($customer->room_number ? 'Chambre ' . $customer->room_number : 'Externe'); ?>
+
                                 </option>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </select>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -310,11 +315,11 @@
                                 <div class="col-md-6">
                                     <select class="form-select" id="menuSelect">
                                         <option value="">Sélectionner un menu</option>
-                                        @foreach($menus ?? [] as $menu)
-                                        <option value="{{ $menu->id }}" data-price="{{ $menu->price }}" data-name="{{ $menu->name }}">
-                                            {{ $menu->name }} ({{ number_format($menu->price, 0, ',', ' ') }} FCFA)
+                                        <?php $__currentLoopData = $menus ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <option value="<?php echo e($menu->id); ?>" data-price="<?php echo e($menu->price); ?>" data-name="<?php echo e($menu->name); ?>">
+                                            <?php echo e($menu->name); ?> (<?php echo e(number_format($menu->price, 0, ',', ' ')); ?> FCFA)
                                         </option>
-                                        @endforeach
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </select>
                                 </div>
                                 <div class="col-md-3">
@@ -380,9 +385,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('footer')
+<?php $__env->startSection('footer'); ?>
 <script>
 $(document).ready(function() {
     let items = [];
@@ -417,7 +422,7 @@ $(document).ready(function() {
         
         // Charger les détails via AJAX
         $.ajax({
-            url: `{{ url('restaurant/orders') }}/${orderId}`,
+            url: `<?php echo e(url('restaurant/orders')); ?>/${orderId}`,
             type: 'GET',
             success: function(response) {
                 $('#orderDetailsContent').html(response.html);
@@ -444,10 +449,10 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `{{ url('restaurant/orders') }}/${orderId}`,
+                    url: `<?php echo e(url('restaurant/orders')); ?>/${orderId}`,
                     type: 'PUT',
                     data: {
-                        _token: '{{ csrf_token() }}',
+                        _token: '<?php echo e(csrf_token()); ?>',
                         status: status
                     },
                     success: function(response) {
@@ -487,10 +492,10 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `{{ url('restaurant/orders') }}/${orderId}/cancel`,
+                    url: `<?php echo e(url('restaurant/orders')); ?>/${orderId}/cancel`,
                     type: 'PUT',
                     data: {
-                        _token: '{{ csrf_token() }}'
+                        _token: '<?php echo e(csrf_token()); ?>'
                     },
                     success: function(response) {
                         Swal.fire(
@@ -661,4 +666,5 @@ $(document).ready(function() {
     text-align: center;
 }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('template.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\HP ELITEBOOK\Desktop\dev\HotelManagement\resources\views/restaurant/orders.blade.php ENDPATH**/ ?>

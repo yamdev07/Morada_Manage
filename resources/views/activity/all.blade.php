@@ -15,7 +15,7 @@
                             <p class="text-muted mb-0">{{ $activities->count() }} activités enregistrées</p>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="{{ route('activity-log.index') }}" class="btn btn-outline-secondary btn-sm">
+                            <a href="{{ route('activity.index') }}" class="btn btn-outline-secondary btn-sm">
                                 <i class="fas fa-arrow-left me-1"></i> Vue paginée
                             </a>
                             <div class="dropdown">
@@ -23,8 +23,8 @@
                                     <i class="fas fa-download me-1"></i> Exporter
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" href="{{ route('activity-log.export', 'csv') }}">CSV</a></li>
-                                    <li><a class="dropdown-item" href="{{ route('activity-log.export', 'json') }}">JSON</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('activity.export', 'csv') }}">CSV</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('activity.export', 'json') }}">JSON</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -101,7 +101,7 @@
                                         </td>
                                         <td class="text-center">
                                             <div class="btn-group btn-group-sm">
-                                                <a href="{{ route('activity-log.show', $activity->id) }}" 
+                                                <a href="{{ route('activity.show', $activity->id) }}"
                                                    class="btn btn-outline-primary"
                                                    data-bs-toggle="tooltip" title="Voir détails">
                                                     <i class="fas fa-eye"></i>
@@ -150,7 +150,7 @@
                 <h5 class="modal-title">Nettoyer les logs</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="{{ route('activity-log.cleanup') }}" method="POST">
+            <form action="{{ route('activity.cleanup') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <p>Supprimer les logs plus anciens que :</p>

@@ -129,7 +129,7 @@
                                                 <div>
                                                     <div class="text-muted small">Balance</div>
                                                     <div class="fw-bold {{ $balance > 0 ? 'text-danger' : 'text-success' }}">
-                                                        {{ Helper::convertToRupiah($balance) }}
+                                                        {{ Helper::formatCFA($balance) }}
                                                     </div>
                                                 </div>
                                             </div>

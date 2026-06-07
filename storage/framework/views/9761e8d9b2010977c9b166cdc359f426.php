@@ -1,8 +1,8 @@
-@extends('frontend.layouts.master')
 
-@section('title', 'Contact - Morada Lodge')
 
-@section('content')
+<?php $__env->startSection('title', 'Contact - Morada Lodge'); ?>
+
+<?php $__env->startSection('content'); ?>
     <!-- Hero Section Contact -->
     <section class="hero-section-contact">
         <div class="container">
@@ -16,25 +16,27 @@
     </section>
 
     <!-- Messages de succès/erreur -->
-    @if(session('success'))
+    <?php if(session('success')): ?>
         <div class="container mt-4">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <i class="fas fa-check-circle me-2"></i>
-                {{ session('success') }}
+                <?php echo e(session('success')); ?>
+
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
-    @endif
+    <?php endif; ?>
 
-    @if(session('error'))
+    <?php if(session('error')): ?>
         <div class="container mt-4">
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 <i class="fas fa-exclamation-circle me-2"></i>
-                {{ session('error') }}
+                <?php echo e(session('error')); ?>
+
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
-    @endif
+    <?php endif; ?>
 
     <!-- Informations de contact -->
     <section class="py-5" style="background-color: var(--warm-beige);">
@@ -102,8 +104,8 @@
                     
                     <div class="card border-0 shadow-sm">
                         <div class="card-body p-4 p-md-5">
-                            <form action="{{ route('frontend.contact.submit') }}" method="POST" id="contactForm">
-                                @csrf
+                            <form action="<?php echo e(route('frontend.contact.submit')); ?>" method="POST" id="contactForm">
+                                <?php echo csrf_field(); ?>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -117,10 +119,17 @@
                                                    required
                                                    placeholder="Votre prénom"
                                                    style="border: 1px solid var(--secondary-brown);"
-                                                   value="{{ old('firstname') }}">
-                                            @error('firstname')
-                                                <span class="text-danger small">{{ $message }}</span>
-                                            @enderror
+                                                   value="<?php echo e(old('firstname')); ?>">
+                                            <?php $__errorArgs = ['firstname'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                <span class="text-danger small"><?php echo e($message); ?></span>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     
@@ -136,10 +145,17 @@
                                                    required
                                                    placeholder="Votre nom"
                                                    style="border: 1px solid var(--secondary-brown);"
-                                                   value="{{ old('lastname') }}">
-                                            @error('lastname')
-                                                <span class="text-danger small">{{ $message }}</span>
-                                            @enderror
+                                                   value="<?php echo e(old('lastname')); ?>">
+                                            <?php $__errorArgs = ['lastname'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                <span class="text-danger small"><?php echo e($message); ?></span>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     
@@ -155,10 +171,17 @@
                                                    required
                                                    placeholder="votre@email.com"
                                                    style="border: 1px solid var(--secondary-brown);"
-                                                   value="{{ old('email') }}">
-                                            @error('email')
-                                                <span class="text-danger small">{{ $message }}</span>
-                                            @enderror
+                                                   value="<?php echo e(old('email')); ?>">
+                                            <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                <span class="text-danger small"><?php echo e($message); ?></span>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     
@@ -172,10 +195,17 @@
                                                    id="arrival" 
                                                    name="arrival"
                                                    style="border: 1px solid var(--secondary-brown);"
-                                                   value="{{ old('arrival') }}">
-                                            @error('arrival')
-                                                <span class="text-danger small">{{ $message }}</span>
-                                            @enderror
+                                                   value="<?php echo e(old('arrival')); ?>">
+                                            <?php $__errorArgs = ['arrival'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                <span class="text-danger small"><?php echo e($message); ?></span>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     
@@ -189,10 +219,17 @@
                                                    id="departure" 
                                                    name="departure"
                                                    style="border: 1px solid var(--secondary-brown);"
-                                                   value="{{ old('departure') }}">
-                                            @error('departure')
-                                                <span class="text-danger small">{{ $message }}</span>
-                                            @enderror
+                                                   value="<?php echo e(old('departure')); ?>">
+                                            <?php $__errorArgs = ['departure'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                <span class="text-danger small"><?php echo e($message); ?></span>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     
@@ -206,13 +243,20 @@
                                                     name="room_type" 
                                                     style="border: 1px solid var(--secondary-brown);">
                                                 <option value="" selected disabled>Choisir un hébergement</option>
-                                                <option value="bungalow" {{ old('room_type') == 'bungalow' ? 'selected' : '' }}>Bungalows Majestueux</option>
-                                                <option value="chambre" {{ old('room_type') == 'chambre' ? 'selected' : '' }}>Chambre Confort</option>
-                                                <option value="suite" {{ old('room_type') == 'suite' ? 'selected' : '' }}>Suite Présidentielle</option>
+                                                <option value="bungalow" <?php echo e(old('room_type') == 'bungalow' ? 'selected' : ''); ?>>Bungalows Majestueux</option>
+                                                <option value="chambre" <?php echo e(old('room_type') == 'chambre' ? 'selected' : ''); ?>>Chambre Confort</option>
+                                                <option value="suite" <?php echo e(old('room_type') == 'suite' ? 'selected' : ''); ?>>Suite Présidentielle</option>
                                             </select>
-                                            @error('room_type')
-                                                <span class="text-danger small">{{ $message }}</span>
-                                            @enderror
+                                            <?php $__errorArgs = ['room_type'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                <span class="text-danger small"><?php echo e($message); ?></span>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     
@@ -226,10 +270,17 @@
                                                       name="message" 
                                                       rows="6" 
                                                       placeholder=""
-                                                      style="border: 1px solid var(--secondary-brown);">{{ old('message') }}</textarea>
-                                            @error('message')
-                                                <span class="text-danger small">{{ $message }}</span>
-                                            @enderror
+                                                      style="border: 1px solid var(--secondary-brown);"><?php echo e(old('message')); ?></textarea>
+                                            <?php $__errorArgs = ['message'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                                <span class="text-danger small"><?php echo e($message); ?></span>
+                                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                         </div>
                                     </div>
                                     
@@ -356,9 +407,9 @@
             </div>
         </div>
     </section>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@push('styles')
+<?php $__env->startPush('styles'); ?>
 <style>
 .hero-section-contact {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
@@ -442,9 +493,9 @@
     }
 }
 </style>
-@endpush
+<?php $__env->stopPush(); ?>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Validation du formulaire
@@ -519,4 +570,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-@endpush
+<?php $__env->stopPush(); ?>
+
+<?php echo $__env->make('frontend.layouts.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\HP ELITEBOOK\Desktop\dev\HotelManagement\resources\views/frontend/pages/contact.blade.php ENDPATH**/ ?>

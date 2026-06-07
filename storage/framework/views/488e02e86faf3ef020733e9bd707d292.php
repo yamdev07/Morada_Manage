@@ -1,10 +1,10 @@
-@extends('template.master')
-@section('title', 'Restaurant - Menus')
-@section('content')
+
+<?php $__env->startSection('title', 'Restaurant - Menus'); ?>
+<?php $__env->startSection('content'); ?>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h3 class="mb-0">Gestion des Menus</h3>
-    <a href="{{ route('restaurant.create') }}" class="btn btn-success">
+    <a href="<?php echo e(route('restaurant.create')); ?>" class="btn btn-success">
         <i class="fas fa-plus me-2"></i>Ajouter un Menu
     </a>
 </div>
@@ -29,41 +29,42 @@
 
         <!-- Liste des menus -->
         <div class="row" id="menuList">
-            @forelse($menus as $menu)
-            <div class="col-xl-3 col-lg-4 col-md-6 menu-item" data-category="{{ $menu->category }}">
+            <?php $__empty_1 = true; $__currentLoopData = $menus; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $menu): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <div class="col-xl-3 col-lg-4 col-md-6 menu-item" data-category="<?php echo e($menu->category); ?>">
                 <div class="card menu-card mb-4 border">
                     <div class="position-relative">
-                        @if($menu->image)
-                        <img src="{{ asset('storage/' . $menu->image) }}" class="card-img-top" alt="{{ $menu->name }}" style="height: 200px; object-fit: cover;">
-                        @else
+                        <?php if($menu->image): ?>
+                        <img src="<?php echo e(asset('storage/' . $menu->image)); ?>" class="card-img-top" alt="<?php echo e($menu->name); ?>" style="height: 200px; object-fit: cover;">
+                        <?php else: ?>
                         <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
                             <i class="fas fa-utensils fa-3x text-muted"></i>
                         </div>
-                        @endif
+                        <?php endif; ?>
                         <span class="badge bg-primary position-absolute top-0 end-0 m-2">
-                            {{ number_format($menu->price, 0, ',', ' ') }} FCFA
+                            <?php echo e(number_format($menu->price, 0, ',', ' ')); ?> FCFA
                         </span>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h5 class="card-title mb-0">{{ $menu->name }}</h5>
-                            <span class="badge bg-info">{{ ucfirst($menu->category) }}</span>
+                            <h5 class="card-title mb-0"><?php echo e($menu->name); ?></h5>
+                            <span class="badge bg-info"><?php echo e(ucfirst($menu->category)); ?></span>
                         </div>
                         <p class="card-text text-muted mb-3">
-                            {{ Str::limit($menu->description, 100) }}
+                            <?php echo e(Str::limit($menu->description, 100)); ?>
+
                         </p>
                         <div class="d-flex justify-content-between">
                             <button class="btn btn-sm btn-outline-primary add-to-order" 
-                                    data-menu-id="{{ $menu->id }}" 
-                                    data-menu-name="{{ $menu->name }}" 
-                                    data-menu-price="{{ $menu->price }}">
+                                    data-menu-id="<?php echo e($menu->id); ?>" 
+                                    data-menu-name="<?php echo e($menu->name); ?>" 
+                                    data-menu-price="<?php echo e($menu->price); ?>">
                                 <i class="fas fa-cart-plus me-1"></i> Commander
                             </button>
                             <div>
                                 <a href="#" class="btn btn-sm btn-outline-warning">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <button class="btn btn-sm btn-outline-danger delete-menu" data-id="{{ $menu->id }}">
+                                <button class="btn btn-sm btn-outline-danger delete-menu" data-id="<?php echo e($menu->id); ?>">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -71,28 +72,29 @@
                     </div>
                 </div>
             </div>
-            @empty
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <div class="col-12">
                 <div class="text-center py-5">
                     <i class="fas fa-utensils fa-4x text-muted mb-3"></i>
                     <h4>Aucun menu disponible</h4>
                     <p class="text-muted">Commencez par ajouter des menus à votre restaurant.</p>
-                    <a href="{{ route('restaurant.create') }}" class="btn btn-primary">
+                    <a href="<?php echo e(route('restaurant.create')); ?>" class="btn btn-primary">
                         <i class="fas fa-plus me-1"></i> Ajouter le premier menu
                     </a>
                 </div>
             </div>
-            @endforelse
+            <?php endif; ?>
         </div>
 
         <!-- Pagination -->
-        @if($menus->hasPages())
+        <?php if($menus->hasPages()): ?>
         <div class="row mt-4">
             <div class="col-12">
-                {{ $menus->links() }}
+                <?php echo e($menus->links()); ?>
+
             </div>
         </div>
-        @endif
+        <?php endif; ?>
     </div>
 </div>
 
@@ -104,16 +106,16 @@
                 <h5 class="modal-title">Nouvelle Commande</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="orderForm" action="{{ route('restaurant.orders.store') }}" method="POST">
-                @csrf
+            <form id="orderForm" action="<?php echo e(route('restaurant.orders.store')); ?>" method="POST">
+                <?php echo csrf_field(); ?>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Client</label>
                         <select class="form-select" name="customer_id" id="customerSelect" required>
                             <option value="">Sélectionner un client</option>
-                            @foreach($customers ?? [] as $customer)
-                            <option value="{{ $customer->id }}">{{ $customer->name }} - Chambre {{ $customer->room_number ?? 'N/A' }}</option>
-                            @endforeach
+                            <?php $__currentLoopData = $customers ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $customer): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($customer->id); ?>"><?php echo e($customer->name); ?> - Chambre <?php echo e($customer->room_number ?? 'N/A'); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
                     </div>
                     
@@ -143,9 +145,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('footer')
+<?php $__env->startSection('footer'); ?>
 <script>
 $(document).ready(function() {
     // Filtrage par catégorie
@@ -205,10 +207,10 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `{{ url('restaurant/menus') }}/${menuId}`,
+                    url: `<?php echo e(url('restaurant/menus')); ?>/${menuId}`,
                     type: 'DELETE',
                     data: {
-                        _token: '{{ csrf_token() }}'
+                        _token: '<?php echo e(csrf_token()); ?>'
                     },
                     success: function(response) {
                         Swal.fire(
@@ -252,4 +254,5 @@ $(document).ready(function() {
     background-color: #17a2b8 !important;
 }
 </style>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('template.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\HP ELITEBOOK\Desktop\dev\HotelManagement\resources\views/restaurant/index.blade.php ENDPATH**/ ?>
