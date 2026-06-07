@@ -28,21 +28,7 @@ class Helper
     }
 
     /**
-     * Convertir un montant en Rupiah (IDR)
-     */
-    public static function convertToRupiah($price, $showSymbol = true)
-    {
-        if (! is_numeric($price)) {
-            return $showSymbol ? 'Rp. 0' : '0';
-        }
-
-        $formatted = number_format($price, 2, ',', '.');
-
-        return $showSymbol ? 'Rp. '.$formatted : $formatted;
-    }
-
-    /**
-     * Convertir EUR en CFA
+     * Convertir EUR en CFA (utilitaire d'import de données ; sortie en FCFA)
      */
     public static function convertEuroToCFA($euros, $showSymbol = true)
     {
@@ -53,22 +39,6 @@ class Helper
         $cfa = $euros * self::CFA_EXCHANGE_RATE;
 
         return self::formatCFA($cfa, 0, $showSymbol);
-    }
-
-    /**
-     * Convertir CFA en EUR
-     */
-    public static function convertCFAToEuro($cfa, $showSymbol = true)
-    {
-        if (! is_numeric($cfa)) {
-            return $showSymbol ? '0 €' : '0';
-        }
-
-        $euros = $cfa / self::CFA_EXCHANGE_RATE;
-
-        $formatted = number_format($euros, 2, ',', ' ');
-
-        return $showSymbol ? $formatted.' €' : $formatted;
     }
 
     /**
@@ -241,44 +211,13 @@ class Helper
     }
 
     /**
-     * Formater un montant avec devise intelligente
-     * Détecte automatiquement si c'est en CFA ou autre
+     * Formater un montant en devise.
+     * L'hôtel opère exclusivement en Francs CFA (FCFA), donc tout montant
+     * est formaté en FCFA quelle que soit la devise demandée.
      */
     public static function formatCurrency($amount, $currency = null)
     {
-        if (! is_numeric($amount)) {
-            return '0';
-        }
-
-        // Si aucune devise spécifiée, on formate simplement
-        if (! $currency) {
-            return number_format($amount, 0, ',', ' ');
-        }
-
-        // Formater selon la devise
-        switch (strtoupper($currency)) {
-            case 'CFA':
-            case 'FCFA':
-            case 'XOF':
-                return self::formatCFA($amount);
-
-            case 'EUR':
-            case 'EURO':
-            case '€':
-                return number_format($amount, 2, ',', ' ').' €';
-
-            case 'IDR':
-            case 'RP':
-            case 'RUPIAH':
-                return self::convertToRupiah($amount);
-
-            case 'USD':
-            case '$':
-                return '$ '.number_format($amount, 2, '.', ',');
-
-            default:
-                return number_format($amount, 2, ',', ' ').' '.$currency;
-        }
+        return self::formatCFA($amount);
     }
 
     /**

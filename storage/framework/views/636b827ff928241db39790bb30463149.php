@@ -515,10 +515,6 @@
                                 <div>
                                     <div class="room-price"><?php echo e(number_format($room->price, 0, ',', ' ')); ?> FCFA</div>
                                     <?php if($room->price > 0): ?>
-                                    <div class="room-price__eur">
-                                        ≈ €<?php echo e(number_format($room->price / 655, 2, ',', ' ')); ?>
-
-                                    </div>
                                     <?php if($room->type && $room->type->base_price && $room->price != $room->type->base_price): ?>
                                     <div class="room-price__custom">
                                         <i class="fas fa-exclamation-circle"></i>
@@ -730,4 +726,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 <?php $__env->stopPush(); ?>
-<?php echo $__env->make('template.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\HP ELITEBOOK\Desktop\dev\HotelManagement\resources\views\room\index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('template.master', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\HP ELITEBOOK\Desktop\dev\HotelManagement\resources\views/room/index.blade.php ENDPATH**/ ?>

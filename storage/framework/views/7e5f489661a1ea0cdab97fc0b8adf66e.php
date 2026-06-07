@@ -834,12 +834,15 @@
                         <tbody>
                             <?php $__currentLoopData = $transactions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $transaction): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <?php
-                                $balance    = $transaction->getTotalPrice() - $transaction->getTotalPayment();
+                                // Paiements déjà eager-loaded (status=completed) -> pas de requête par ligne
+                                $totalPrice = $transaction->getTotalPrice();
+                                $totalPaid  = $transaction->payments->sum('amount');
+                                $balance    = $totalPrice - $totalPaid;
                                 $isNew      = \Carbon\Carbon::parse($transaction->check_in)->isToday();
                                 $isOut      = \Carbon\Carbon::parse($transaction->check_out)->isToday();
                                 $initials   = strtoupper(substr($transaction->customer->name, 0, 2));
                                 $balanceFmt = number_format($balance, 0, ',', ' ') . ' CFA';
-                                $totalFmt   = number_format($transaction->getTotalPrice(), 0, ',', ' ') . ' CFA';
+                                $totalFmt   = number_format($totalPrice, 0, ',', ' ') . ' CFA';
                             ?>
                             <tr class="<?php echo e($isNew ? 'row-new' : ''); ?>">
 

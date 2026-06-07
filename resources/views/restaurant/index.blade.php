@@ -41,7 +41,7 @@
                         </div>
                         @endif
                         <span class="badge bg-primary position-absolute top-0 end-0 m-2">
-                            {{ number_format($menu->price, 2) }} €
+                            {{ number_format($menu->price, 0, ',', ' ') }} FCFA
                         </span>
                     </div>
                     <div class="card-body">
@@ -177,7 +177,7 @@ $(document).ready(function() {
         $('#selectedMenuId').val(menuId);
         $('#selectedMenuInfo').html(`
             <strong>${menuName}</strong><br>
-            Prix unitaire: ${menuPrice} €
+            Prix unitaire: ${menuPrice} FCFA
         `);
         
         $('#orderModal').modal('show');

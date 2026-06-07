@@ -302,7 +302,7 @@
                             <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                                 <div class="accordion-body" style="background-color: #fafafa; padding: 25px;">
                                     <p style="margin-bottom: 15px; font-size: 1rem;"><strong>Oui, Morada Lodge accepte les animaux de compagnie</strong> (chiens et chats jusqu'à 8kg).</p>
-                                    <p style="font-size: 0.95rem; color: #666;">Des frais supplémentaires de 50€ par nuit sont appliqués. Un lit et des gamelles sont fournis sur demande.</p>
+                                    <p style="font-size: 0.95rem; color: #666;">Des frais supplémentaires de 30 000 FCFA par nuit sont appliqués. Un lit et des gamelles sont fournis sur demande.</p>
                                 </div>
                             </div>
                         </div>

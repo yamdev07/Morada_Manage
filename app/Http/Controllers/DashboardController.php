@@ -159,20 +159,14 @@ class DashboardController extends Controller
                 }
             }
 
-            Log::debug("Transaction #{$transaction->id} - Total price: {$totalPrice}");
-
-            // Total des paiements complétés
+            // Total des paiements complétés (depuis la collection déjà eager-loaded)
             $totalPayment = 0;
 
             if ($transaction->payments && $transaction->payments->count() > 0) {
                 $totalPayment = $transaction->payments->sum('amount');
-                Log::debug("Transaction #{$transaction->id} - Total payment: {$totalPayment}");
             }
 
-            $balance = $totalPrice - $totalPayment;
-            Log::debug("Transaction #{$transaction->id} - Balance: {$balance}");
-
-            return $balance;
+            return $totalPrice - $totalPayment;
 
         } catch (\Exception $e) {
             Log::error("Error calculating balance for transaction #{$transaction->id}: ".$e->getMessage());

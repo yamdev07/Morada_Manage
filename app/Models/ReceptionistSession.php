@@ -124,18 +124,18 @@ class ReceptionistSession extends Model
         $summary .= "• Nouveaux clients: {$this->customer_creations}\n";
 
         $summary .= "\n💰 FINANCES:\n";
-        $summary .= '• Montant total transactions: '.number_format($this->total_transactions_amount, 2, ',', ' ')." €\n";
-        $summary .= '• Espèces: '.number_format($this->cash_handled, 2, ',', ' ')." €\n";
-        $summary .= '• Carte: '.number_format($this->card_handled, 2, ',', ' ')." €\n";
-        $summary .= '• Autres: '.number_format($this->other_payments_handled, 2, ',', ' ')." €\n";
-        $summary .= '• Total encaissé: '.number_format($this->getTotalHandled(), 2, ',', ' ')." €\n";
+        $summary .= '• Montant total transactions: '.number_format($this->total_transactions_amount, 0, ',', ' ')." FCFA\n";
+        $summary .= '• Espèces: '.number_format($this->cash_handled, 0, ',', ' ')." FCFA\n";
+        $summary .= '• Carte: '.number_format($this->card_handled, 0, ',', ' ')." FCFA\n";
+        $summary .= '• Autres: '.number_format($this->other_payments_handled, 0, ',', ' ')." FCFA\n";
+        $summary .= '• Total encaissé: '.number_format($this->getTotalHandled(), 0, ',', ' ')." FCFA\n";
 
         $summary .= "\n📈 PERFORMANCE:\n";
         $summary .= "• Score productivité: {$this->getProductivityScore()} actions/heure\n";
         $summary .= '• Valeur moyenne par transaction: '.
                    ($this->reservations_count > 0 ?
-                    number_format($this->total_transactions_amount / $this->reservations_count, 2, ',', ' ').' €' :
-                    '0 €')."\n";
+                    number_format($this->total_transactions_amount / $this->reservations_count, 0, ',', ' ').' FCFA' :
+                    '0 FCFA')."\n";
 
         return $summary;
     }

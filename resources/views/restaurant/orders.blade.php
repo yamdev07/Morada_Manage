@@ -51,10 +51,10 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="text-muted mb-1">CA (auj.)</h6>
-                        <h3 class="mb-0 text-primary">{{ number_format($todayRevenue ?? 0, 2) }} €</h3>
+                        <h3 class="mb-0 text-primary">{{ number_format($todayRevenue ?? 0, 0, ',', ' ') }} FCFA</h3>
                     </div>
                     <div class="bg-primary bg-opacity-10 p-3 rounded">
-                        <i class="fas fa-euro-sign fa-2x text-primary"></i>
+                        <i class="fas fa-coins fa-2x text-primary"></i>
                     </div>
                 </div>
             </div>
@@ -158,7 +158,7 @@
                             </button>
                         </td>
                         <td>
-                            <strong class="text-primary">{{ number_format($order->total, 2) }} €</strong>
+                            <strong class="text-primary">{{ number_format($order->total, 0, ',', ' ') }} FCFA</strong>
                         </td>
                         <td>
                             @php
@@ -212,7 +212,7 @@
                                     @if(in_array($order->status, ['delivered', 'pending']))
                                     <li>
                                         <a class="dropdown-item change-status" href="#" data-order-id="{{ $order->id }}" data-status="paid">
-                                            <i class="fas fa-euro-sign me-2"></i> Marquer payé
+                                            <i class="fas fa-coins me-2"></i> Marquer payé
                                         </a>
                                     </li>
                                     @endif
@@ -312,7 +312,7 @@
                                         <option value="">Sélectionner un menu</option>
                                         @foreach($menus ?? [] as $menu)
                                         <option value="{{ $menu->id }}" data-price="{{ $menu->price }}" data-name="{{ $menu->name }}">
-                                            {{ $menu->name }} ({{ number_format($menu->price, 2) }} €)
+                                            {{ $menu->name }} ({{ number_format($menu->price, 0, ',', ' ') }} FCFA)
                                         </option>
                                         @endforeach
                                     </select>
@@ -344,7 +344,7 @@
                                     <tfoot>
                                         <tr>
                                             <th colspan="3" class="text-end">Total:</th>
-                                            <th id="orderTotal">0.00 €</th>
+                                            <th id="orderTotal">0 FCFA</th>
                                             <th></th>
                                         </tr>
                                     </tfoot>
@@ -576,12 +576,12 @@ $(document).ready(function() {
             const row = `
                 <tr>
                     <td>${item.name}</td>
-                    <td>${item.price.toFixed(2)} €</td>
+                    <td>${Math.round(item.price).toLocaleString('fr-FR')} FCFA</td>
                     <td>
                         <input type="number" class="form-control form-control-sm quantity-input" 
                                data-index="${index}" value="${item.quantity}" min="1" style="width: 70px;">
                     </td>
-                    <td>${itemTotal.toFixed(2)} €</td>
+                    <td>${Math.round(itemTotal).toLocaleString('fr-FR')} FCFA</td>
                     <td>
                         <button type="button" class="btn btn-sm btn-danger remove-item" data-index="${index}">
                             <i class="fas fa-trash"></i>
@@ -592,7 +592,7 @@ $(document).ready(function() {
             tbody.append(row);
         });
         
-        $('#orderTotal').text(total.toFixed(2) + ' €');
+        $('#orderTotal').text(Math.round(total).toLocaleString('fr-FR') + ' FCFA');
         $('#totalInput').val(total);
         $('#itemsInput').val(JSON.stringify(items));
     }
