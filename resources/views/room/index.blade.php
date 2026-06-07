@@ -265,14 +265,151 @@
 ══════════════════════════════════════════════ */
 .alert-modern {
     display: flex; align-items: center; gap: 12px;
-.rooms-table tbody tr {
-    animation: fadeSlide .3s ease both;
+    padding: 14px 18px;
+    border-radius: var(--rl);
+    margin-bottom: 20px;
+    font-size: .9rem;
+    box-shadow: var(--shadow-sm);
 }
+.alert-modern .alert-icon { font-size: 1.2rem; }
+.alert-modern span { flex: 1; }
+.alert-modern .alert-close {
+    background: none; border: 0; font-size: 1.4rem; line-height: 1;
+    cursor: pointer; color: inherit; opacity: .6;
+}
+.alert-modern .alert-close:hover { opacity: 1; }
+.alert-success { background: #e8f5e9; color: #1b5e20; border: 1px solid #c8e6c9; }
+.alert-danger  { background: #fdecea; color: #b71c1c; border: 1px solid #f5c6cb; }
+
+/* ══════════════════════════════════════════════
+   ACTION BAR / RECHERCHE
+══════════════════════════════════════════════ */
+.action-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; margin-bottom: 20px; flex-wrap: wrap;
+}
+.action-left, .action-right { display: flex; align-items: center; gap: 10px; }
+.filter-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border-radius: 999px;
+    background: var(--m100); color: var(--m700);
+    font-weight: 600; font-size: .85rem;
+}
+.search-container { position: relative; }
+.search-icon {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--s400); font-size: .85rem; pointer-events: none;
+}
+.search-input {
+    width: 320px; max-width: 100%;
+    padding: 10px 16px 10px 38px;
+    border: 1px solid var(--s200); border-radius: var(--r);
+    font-family: var(--font); font-size: .9rem;
+    background: var(--white); transition: var(--transition);
+}
+.search-input:focus {
+    outline: none; border-color: var(--m400);
+    box-shadow: 0 0 0 3px rgba(139,69,19,.12);
+}
+
+/* ══════════════════════════════════════════════
+   CARTE LISTE + TABLEAU
+══════════════════════════════════════════════ */
+.rooms-card {
+    background: var(--white);
+    border-radius: var(--rxl);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--s200);
+    overflow: hidden;
+}
+.rooms-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 24px; border-bottom: 1px solid var(--s200);
+}
+.rooms-card-title {
+    display: flex; align-items: center; gap: 10px;
+    margin: 0; font-size: 1rem; font-weight: 600; color: var(--s800);
+}
+.rooms-card-title i { color: var(--m500); }
+.rooms-card-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: .8rem; color: var(--s500);
+}
+.rooms-card-body { padding: 8px 0 0; }
+
+.rooms-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+.rooms-table thead th {
+    text-align: left; padding: 14px 20px;
+    font-size: .72rem; font-weight: 700; letter-spacing: .04em;
+    text-transform: uppercase; color: var(--s500);
+    background: var(--surface2);
+    border-bottom: 1px solid var(--s200);
+    white-space: nowrap;
+}
+.rooms-table tbody td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--s100);
+    vertical-align: middle;
+}
+.rooms-table tbody tr { animation: fadeSlide .3s ease both; }
+.rooms-table tbody tr:hover { background: var(--m50); }
 .rooms-table tbody tr:nth-child(1) { animation-delay: .02s; }
 .rooms-table tbody tr:nth-child(2) { animation-delay: .04s; }
 .rooms-table tbody tr:nth-child(3) { animation-delay: .06s; }
 .rooms-table tbody tr:nth-child(4) { animation-delay: .08s; }
 .rooms-table tbody tr:nth-child(5) { animation-delay: .10s; }
+
+/* ── Contenu des cellules ── */
+.room-num {
+    font-family: var(--mono); font-weight: 600;
+    color: var(--m700); background: var(--m100);
+    padding: 4px 10px; border-radius: var(--r); font-size: .85rem;
+}
+.room-name { font-weight: 600; color: var(--s800); }
+.room-meta {
+    display: flex; align-items: center; gap: 6px;
+    font-size: .78rem; color: var(--s400); margin-top: 2px;
+}
+.room-type { color: var(--s700); font-weight: 500; }
+.room-type__base { font-size: .76rem; color: var(--s400); margin-top: 2px; }
+.room-capacity { display: flex; align-items: center; gap: 6px; color: var(--s600); }
+.room-capacity i { color: var(--m400); }
+.room-price { font-family: var(--mono); font-weight: 600; color: var(--s800); }
+.room-price__custom {
+    display: flex; align-items: center; gap: 5px;
+    font-size: .74rem; color: var(--m500); margin-top: 2px;
+}
+
+/* ── Badges de statut ── */
+.badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 999px;
+    font-size: .76rem; font-weight: 600; line-height: 1;
+}
+.badge--success { background: #e8f5e9; color: #1b5e20; }
+.badge--warning { background: #fff3cd; color: #856404; }
+.badge--danger  { background: #fdecea; color: #b71c1c; }
+.badge--info    { background: #e1f5fe; color: #01579b; }
+.badge--gray    { background: var(--s100); color: var(--s600); }
+
+/* ── État vide ── */
+.empty-state { text-align: center; padding: 56px 20px; }
+.empty-icon {
+    width: 72px; height: 72px; margin: 0 auto 16px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%; background: var(--m100);
+    color: var(--m400); font-size: 1.8rem;
+}
+.empty-title { font-size: 1.05rem; font-weight: 600; color: var(--s700); margin: 0 0 6px; }
+.empty-text { color: var(--s400); margin: 0 0 20px; }
+
+/* ── Pagination ── */
+.pagination-wrap {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px; padding: 18px 24px;
+    border-top: 1px solid var(--s200);
+}
+.pagination-info { font-size: .85rem; color: var(--s500); }
 
 /* ══════════════════════════════════════════════
    RESPONSIVE
