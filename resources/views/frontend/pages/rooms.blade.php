@@ -161,7 +161,8 @@
                         <div class="room-image-wrapper">
                             <img src="{{ asset('img/room/buglow.jpg') }}" 
                                  alt="Bungalows Majestueux"
-                                 class="room-image">
+                                 class="room-image"
+                                 onerror="this.onerror=null;this.src='{{ asset('img/default/default-room.png') }}';">
                             <div class="room-status">
                                 <span class="status-badge premium">
                                     <i class="fas fa-crown"></i> Premium
@@ -222,7 +223,8 @@
                         <div class="room-image-wrapper">
                             <img src="{{ asset('img/room/lit.jpg') }}" 
                                  alt="Chambre Confort"
-                                 class="room-image">
+                                 class="room-image"
+                                 onerror="this.onerror=null;this.src='{{ asset('img/default/default-room.png') }}';">
                             <div class="room-status">
                                 <span class="status-badge classic">
                                     <i class="fas fa-star"></i> Classic
@@ -283,7 +285,8 @@
                         <div class="room-image-wrapper">
                             <img src="{{ asset('img/room/suite.jpg') }}" 
                                  alt="Suite Présidentielle"
-                                 class="room-image">
+                                 class="room-image"
+                                 onerror="this.onerror=null;this.src='{{ asset('img/default/default-room.png') }}';">
                             <div class="room-status">
                                 <span class="status-badge prestige">
                                     <i class="fas fa-gem"></i> Prestige
@@ -389,7 +392,7 @@
                             <img src="{{ $imageUrl }}"
                                  class="card-img-top room-image"
                                  alt="{{ $room->name }}"
-                                 onerror="this.onerror=null; this.src='{{ asset('img/room/gamesetting.png') }}';"
+                                 onerror="this.onerror=null; this.src='{{ asset('img/default/default-room.png') }}';"
                                  style="height: 100%; width: 100%; object-fit: cover; transition: transform 0.5s ease;">
                             @if($room->images && $room->images->count() > 1)
                             <div style="position: absolute; bottom: 10px; right: 10px;">
@@ -965,6 +968,17 @@
     .card-title { font-size: 1.1rem; }
     .card-text { font-size: 0.85rem; }
 }
+
+/* ── Icônes favoris / badges sur les images (déplacé hors du <script> qui cassait le JS) ── */
+.favorite-btn:hover { background: var(--primary-brown) !important; color: white !important; transform: scale(1.1); box-shadow: 0 4px 12px rgba(139,69,19,.3); }
+.favorite-btn.active { background: var(--primary-brown) !important; color: white !important; }
+.favorite-btn.active i { color: white !important; }
+.room-status-badge .badge { backdrop-filter: blur(10px); box-shadow: 0 2px 8px rgba(0,0,0,.1); font-size:.75rem; letter-spacing:.5px; }
+.room-card:hover .room-status-badge .badge { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(139,69,19,.2); }
+.room-image-container .badge.bg-dark { background: rgba(139,69,19,.8) !important; backdrop-filter: blur(10px); border:1px solid rgba(255,255,255,.2); }
+.room-card:hover { box-shadow: 0 12px 32px rgba(139,69,19,.15) !important; }
+@keyframes heartBeat { 0%{transform:scale(1);} 25%{transform:scale(1.2);} 50%{transform:scale(1);} 75%{transform:scale(1.1);} 100%{transform:scale(1);} }
+.favorite-btn:active { animation: heartBeat .3s ease; }
 </style>
 @endpush
 
@@ -1075,61 +1089,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-
-    /* ── Styles pour les icônes sur les images ── */
-    .favorite-btn:hover {
-        background: var(--primary-brown) !important;
-        color: white !important;
-        transform: scale(1.1);
-        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.3);
-    }
-
-    .favorite-btn.active {
-        background: var(--primary-brown) !important;
-        color: white !important;
-    }
-
-    .favorite-btn.active i {
-        color: white !important;
-    }
-
-    .room-status-badge .badge {
-        backdrop-filter: blur(10px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        font-size: 0.75rem;
-        letter-spacing: 0.5px;
-    }
-
-    /* Animation subtile pour les badges */
-    .room-card:hover .room-status-badge .badge {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
-    }
-
-    /* Style pour les badges d'images multiples */
-    .room-image-container .badge.bg-dark {
-        background: rgba(139, 69, 19, 0.8) !important;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    /* Amélioration du hover sur les cartes */
-    .room-card:hover {
-        box-shadow: 0 12px 32px rgba(139, 69, 19, 0.15) !important;
-    }
-
-    /* Animation pour le bouton favoris */
-    @keyframes heartBeat {
-        0% { transform: scale(1); }
-        25% { transform: scale(1.2); }
-        50% { transform: scale(1); }
-        75% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-    }
-
-    .favorite-btn:active {
-        animation: heartBeat 0.3s ease;
-    }
 
     /* ── Toasts ── */
     function showToast(message, type = 'success') {

@@ -75,9 +75,10 @@
                 <div class="col-lg-6" data-aos="fade-right">
                     <div class="intro-image-wrapper">
                         <div class="main-image">
-                            <img src="{{ asset('img/room/Photo10.jpeg') }}" 
-                                 alt="Morada Lodge" 
-                                 class="img-fluid">
+                            <img src="{{ asset('img/room/Photo10.jpeg') }}"
+                                 alt="Morada Lodge"
+                                 class="img-fluid"
+                                 onerror="this.onerror=null;this.src='{{ asset('img/default/default-room.png') }}';">
                         </div>
                         <div class="floating-badge">
                             <div class="badge-content">
@@ -125,7 +126,8 @@
                         <div class="room-image-wrapper">
                             <img src="{{ asset('img/room/buglow.jpg') }}" 
                                  alt="Bungalows Majestueux"
-                                 class="room-image">
+                                 class="room-image"
+                                 onerror="this.onerror=null;this.src='{{ asset('img/default/default-room.png') }}';">
                             <div class="room-status">
                                 <span class="status-badge premium">
                                     <i class="fas fa-crown"></i> Premium
@@ -186,7 +188,8 @@
                         <div class="room-image-wrapper">
                             <img src="{{ asset('img/room/lit.jpg') }}" 
                                  alt="Chambre Confort"
-                                 class="room-image">
+                                 class="room-image"
+                                 onerror="this.onerror=null;this.src='{{ asset('img/default/default-room.png') }}';">
                             <div class="room-status">
                                 <span class="status-badge classic">
                                     <i class="fas fa-star"></i> Classic
@@ -247,7 +250,8 @@
                         <div class="room-image-wrapper">
                             <img src="{{ asset('img/room/suite.jpg') }}" 
                                  alt="Suite Présidentielle"
-                                 class="room-image">
+                                 class="room-image"
+                                 onerror="this.onerror=null;this.src='{{ asset('img/default/default-room.png') }}';">
                             <div class="room-status">
                                 <span class="status-badge prestige">
                                     <i class="fas fa-gem"></i> Prestige
@@ -604,7 +608,7 @@ body {
 .hero-modern {
     position: relative;
     min-height: 100vh;
-    background: linear-gradient(135deg, rgba(101, 67, 33, 0.8) 0%, rgba(139, 69, 19, 0.6) 100%),
+    background: linear-gradient(135deg, rgba(101, 67, 33, 0.55) 0%, rgba(139, 69, 19, 0.4) 100%),
                 url('{{ asset('img/accueil.jpg') }}');
     background-size: cover;
     background-position: center;
