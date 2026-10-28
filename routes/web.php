@@ -17,6 +17,7 @@ use App\Http\Controllers\NotificationsController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RestaurantCategoryController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\RoomStatusController;
@@ -155,8 +156,8 @@ Route::group(['middleware' => ['auth', 'checkrole:Super,Admin,Receptionist', 'ad
         Route::get('/{customer}/{room}/{from}/{to}/confirmation', [TransactionRoomReservationController::class, 'confirmation'])->name('confirmation');
         Route::post('/{customer}/{room}/payDownPayment', [TransactionRoomReservationController::class, 'payDownPayment'])->name('payDownPayment');
         Route::get('/customer/{customer}/reservations', [TransactionRoomReservationController::class, 'showCustomerReservations'])->name('customerReservations');
-         Route::get('/api/checkouts-today', [TransactionRoomReservationController::class, 'getRoomsBeingCheckedOutToday'])
-        ->name('api.checkouts-today');  
+        Route::get('/api/checkouts-today', [TransactionRoomReservationController::class, 'getRoomsBeingCheckedOutToday'])
+            ->name('api.checkouts-today');
         Route::post('/api/check-room-availability', [TransactionRoomReservationController::class, 'checkRoomAvailabilityToday'])
             ->name('api.check-room-availability');
         Route::post('/create-waiting', [TransactionRoomReservationController::class, 'createWaitingReservation'])
@@ -432,28 +433,56 @@ Route::group(['middleware' => ['auth', 'checkrole:Super,Admin,Customer,Housekeep
 
     // ==================== RESTAURANT (ACCESSIBLE À TOUS) ====================
     Route::prefix('restaurant')->name('restaurant.')->group(function () {
-        // Routes sans paramètres d'abord
+        // Hub du service
         Route::get('/', [RestaurantController::class, 'index'])->name('index');
+
+        // Commandes
         Route::get('/orders', [RestaurantController::class, 'orders'])->name('orders');
         Route::post('/orders', [RestaurantController::class, 'storeOrder'])->name('orders.store');
 
-        // Routes avec paramètre {id}
         Route::prefix('orders/{id}')->group(function () {
             Route::get('/', [RestaurantController::class, 'showOrder'])->name('orders.show');
             Route::put('/', [RestaurantController::class, 'updateOrder'])->name('orders.update');
+            // L'annulation reste un geste de gestion : réservée aux responsables
             Route::put('/cancel', [RestaurantController::class, 'cancelOrder'])->name('orders.cancel')
-                ->middleware('require.authorization');
+                ->middleware('checkrole:Super,Admin,Receptionist');
         });
+
+        // Réservations de table
+        Route::get('/reservations', [RestaurantController::class, 'reservations'])->name('reservations');
+        Route::post('/reservations', [RestaurantController::class, 'storeReservation'])->name('reservations.store');
+        Route::put('/reservations/{id}', [RestaurantController::class, 'updateReservation'])->name('reservations.update');
+
+        // Carte (consultation)
+        Route::get('/menus', [RestaurantController::class, 'menus'])->name('menus');
+
+        // Ventes et facture
+        Route::get('/sales', [RestaurantController::class, 'sales'])->name('sales');
+        Route::get('/orders/{id}/invoice', [RestaurantController::class, 'invoice'])->name('orders.invoice');
+        Route::put('/orders/{id}/guest-name', [RestaurantController::class, 'updateGuestName'])->name('orders.guest-name');
 
         // API AJAX
         Route::get('/api/customers', [RestaurantController::class, 'getCustomers'])->name('api.customers');
         Route::get('/api/menus', [RestaurantController::class, 'getMenus'])->name('api.menus');
 
-        // Gestion des menus seulement pour admins
+        // Gestion de la carte : réservée aux gestionnaires
         Route::middleware('checkrole:Super,Admin,Receptionist')->group(function () {
-            Route::get('/create', [RestaurantController::class, 'create'])->name('create');
-            Route::post('/store', [RestaurantController::class, 'store'])->name('store');
+            Route::get('/menus/create', [RestaurantController::class, 'create'])->name('menus.create');
+            Route::post('/menus', [RestaurantController::class, 'store'])->name('menus.store');
+            Route::get('/menus/{id}/edit', [RestaurantController::class, 'edit'])->name('menus.edit');
+            Route::put('/menus/{id}', [RestaurantController::class, 'update'])->name('menus.update');
+            Route::patch('/menus/{id}/availability', [RestaurantController::class, 'toggleAvailability'])
+                ->name('menus.availability');
             Route::delete('/menus/{id}', [RestaurantController::class, 'destroy'])->name('menus.destroy');
+
+            // Catégories de la carte
+            Route::get('/categories', [RestaurantCategoryController::class, 'index'])->name('categories');
+            Route::post('/categories', [RestaurantCategoryController::class, 'store'])->name('categories.store');
+            Route::put('/categories/{id}', [RestaurantCategoryController::class, 'update'])->name('categories.update');
+            Route::delete('/categories/{id}', [RestaurantCategoryController::class, 'destroy'])->name('categories.destroy');
+
+            // Anciennes URLs de création de menu
+            Route::redirect('/create', '/restaurant/menus/create')->name('create');
         });
     });
 });
@@ -522,11 +551,10 @@ Route::prefix('housekeeping')->name('housekeeping.')->middleware(['auth', 'check
     Route::get('/to-clean', [HousekeepingController::class, 'toClean'])->name('to-clean');
     Route::get('/quick-list/{status}', [HousekeepingController::class, 'quickList'])->name('quick-list');
 
-     // ✅ AJOUTE CETTE ROUTE ICI
+    // ✅ AJOUTE CETTE ROUTE ICI
     Route::post('/room/{room}/mark-cleaned', [HousekeepingController::class, 'markAsCleaned'])
         ->name('mark-cleaned')
         ->middleware('checkrole:Super,Admin,Housekeeping');
-        
 
     // Rapports et statistiques
     Route::get('/reports', [HousekeepingController::class, 'reports'])->name('reports');
@@ -856,4 +884,4 @@ Route::fallback(function () {
     }
 
     return redirect()->route('login.index')->with('error', 'Page non trouvée. Veuillez vous connecter.');
-});   
+});

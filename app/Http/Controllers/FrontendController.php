@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Menu;
 use App\Models\Room;
-use App\Models\Type;
 use App\Models\Transaction;
-use App\Models\Customer;
+use App\Models\Type;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -19,12 +19,17 @@ class FrontendController extends Controller
     // Page d'accueil du site vitrine
     public function home()
     {
-        $featuredRooms = Room::with(['type', 'roomStatus', 'images', 'facilities'])
-            ->where('room_status_id', 1) // Available
-            ->limit(3)
-            ->get();
+        // Les catégories de chambres avec leurs vrais tarifs saisis dans le back-office
+        $featuredTypes = Type::with(['rooms' => fn ($q) => $q->with('images')->orderBy('price')])
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->filter(fn ($type) => $type->display_price !== null)
+            ->take(3)
+            ->values();
 
-        return view('frontend.pages.home', compact('featuredRooms'));
+        return view('frontend.pages.home', compact('featuredTypes'));
     }
 
     // Liste des chambres
@@ -57,16 +62,16 @@ class FrontendController extends Controller
         if ($request->filled('check_in') && $request->filled('check_out')) {
             $checkIn = Carbon::parse($request->check_in)->startOfDay();
             $checkOut = Carbon::parse($request->check_out)->startOfDay();
-            
+
             // Exclure les chambres qui ont des réservations pendant cette période
             $bookedRoomIds = Transaction::whereIn('status', ['reservation', 'active'])
                 ->where(function ($q) use ($checkIn, $checkOut) {
                     $q->where('check_in', '<', $checkOut)
-                      ->where('check_out', '>', $checkIn);
+                        ->where('check_out', '>', $checkIn);
                 })
                 ->pluck('room_id')
                 ->toArray();
-            
+
             $query->whereNotIn('id', $bookedRoomIds);
         }
 
@@ -119,11 +124,11 @@ class FrontendController extends Controller
             ->where('check_out', '>=', $today)
             ->whereIn('status', ['active', 'reservation'])
             ->exists();
-        
-        $room->is_available_today = !$isOccupied && $room->room_status_id == 1;
-        
+
+        $room->is_available_today = ! $isOccupied && $room->room_status_id == 1;
+
         // Prochaine date disponible
-        if (!$room->is_available_today) {
+        if (! $room->is_available_today) {
             $nextTransaction = Transaction::where('room_id', $room->id)
                 ->where('check_out', '>', $today)
                 ->whereIn('status', ['active', 'reservation'])
@@ -145,9 +150,16 @@ class FrontendController extends Controller
     // Restaurant vitrine
     public function restaurant()
     {
-        $menus = Menu::all();
+        // La carte publique vient du back-office : seuls les plats disponibles sont affichés,
+        // dans l'ordre des catégories défini par le restaurant.
+        $categories = \App\Models\Category::ordered()
+            ->with(['menus' => fn ($q) => $q->available()->orderBy('name')])
+            ->get()
+            ->filter(fn ($category) => $category->menus->isNotEmpty());
 
-        return view('frontend.pages.restaurant', compact('menus'));
+        $uncategorized = Menu::available()->whereNull('category_id')->orderBy('name')->get();
+
+        return view('frontend.pages.restaurant', compact('categories', 'uncategorized'));
     }
 
     // Services
@@ -177,7 +189,7 @@ class FrontendController extends Controller
         try {
             // Sauvegarder le message dans la base de données
             // $contact = \App\Models\ContactMessage::create($validated);
-            
+
             // Envoyer un email
             // Mail::to('contact@luxurypalace.com')->send(new ContactFormMail($validated));
 
@@ -187,8 +199,8 @@ class FrontendController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Erreur contact: ' . $e->getMessage());
-            
+            Log::error('Erreur contact: '.$e->getMessage());
+
             return redirect()->back()->with([
                 'error' => 'Une erreur est survenue lors de l\'envoi de votre message. Veuillez réessayer.',
                 'status' => 'error',
@@ -201,25 +213,38 @@ class FrontendController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'phone' => 'required|string',
-            'date' => 'required|date',
+            'phone' => 'required|string|max:30',
+            'email' => 'nullable|email|max:255',
+            'date' => 'required|date|after_or_equal:today',
             'time' => 'required',
             'persons' => 'required|integer|min:1|max:20',
-            'table_type' => 'nullable|string',
-            'notes' => 'nullable|string',
+            'table_type' => 'nullable|string|max:50',
+            'notes' => 'nullable|string|max:1000',
         ]);
 
         try {
-            // Sauvegarder la réservation dans la base de données
-            // $reservation = \App\Models\RestaurantReservation::create($validated);
-            
+            // La demande arrive directement dans le module Restaurant du back-office
+            $reservation = \App\Models\RestaurantReservation::create([
+                'name' => $validated['name'],
+                'phone' => $validated['phone'],
+                'email' => $validated['email'] ?? null,
+                'reservation_date' => $validated['date'],
+                'reservation_time' => $validated['time'],
+                'persons' => $validated['persons'],
+                'table_type' => $validated['table_type'] ?? null,
+                'notes' => $validated['notes'] ?? null,
+                'status' => 'pending',
+                'source' => 'site',
+            ]);
+
             return response()->json([
                 'success' => true,
+                'reservation_id' => $reservation->id,
                 'message' => 'Réservation envoyée avec succès ! Nous vous contacterons pour confirmer.',
             ]);
         } catch (\Exception $e) {
-            Log::error('Erreur réservation restaurant: ' . $e->getMessage());
-            
+            Log::error('Erreur réservation restaurant: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'Une erreur est survenue. Veuillez réessayer.',
@@ -233,29 +258,29 @@ class FrontendController extends Controller
         $checkIn = Carbon::parse($request->check_in)->startOfDay();
         $checkOut = Carbon::parse($request->check_out)->startOfDay();
         $adults = $request->adults ?? 1;
-        
+
         // Chambres réservées
         $bookedRoomIds = Transaction::whereIn('status', ['reservation', 'active'])
             ->where(function ($q) use ($checkIn, $checkOut) {
                 $q->where('check_in', '<', $checkOut)
-                  ->where('check_out', '>', $checkIn);
+                    ->where('check_out', '>', $checkIn);
             })
             ->pluck('room_id')
             ->toArray();
-        
+
         // Chambres disponibles
         $rooms = Room::with('type')
             ->where('room_status_id', 1)
             ->whereNotIn('id', $bookedRoomIds)
             ->where('capacity', '>=', $adults) // Capacité suffisante
-            ->when($request->room_type, function($q) use ($request) {
+            ->when($request->room_type, function ($q) use ($request) {
                 return $q->where('type_id', $request->room_type);
             })
-            ->when($request->max_price, function($q) use ($request) {
+            ->when($request->max_price, function ($q) use ($request) {
                 return $q->where('price', '<=', $request->max_price);
             })
             ->get()
-            ->map(function($room) {
+            ->map(function ($room) {
                 return [
                     'id' => $room->id,
                     'number' => $room->number,
@@ -266,15 +291,15 @@ class FrontendController extends Controller
                     'type_name' => $room->type->name ?? 'Standard',
                 ];
             });
-        
+
         return response()->json([
             'rooms' => $rooms,
             'count' => $rooms->count(),
             'dates' => [
                 'check_in' => $checkIn->format('Y-m-d'),
                 'check_out' => $checkOut->format('Y-m-d'),
-                'nights' => $checkIn->diffInDays($checkOut)
-            ]
+                'nights' => $checkIn->diffInDays($checkOut),
+            ],
         ]);
     }
 
@@ -311,19 +336,20 @@ class FrontendController extends Controller
             $totalPrice = $room->price * $nights;
 
             Log::info('Calculs:', [
-                'check_in' => $checkIn, 
-                'check_out' => $checkOut, 
-                'nights' => $nights, 
-                'total' => $totalPrice
+                'check_in' => $checkIn,
+                'check_out' => $checkOut,
+                'nights' => $nights,
+                'total' => $totalPrice,
             ]);
 
             // Vérifier la disponibilité
             $isAvailable = $room->isAvailableForPeriod($checkIn, $checkOut);
-            if (!$isAvailable) {
+            if (! $isAvailable) {
                 Log::warning('Chambre non disponible pour ces dates');
+
                 return response()->json([
                     'success' => false,
-                    'message' => 'La chambre n\'est plus disponible pour les dates sélectionnées.'
+                    'message' => 'La chambre n\'est plus disponible pour les dates sélectionnées.',
                 ], 422);
             }
 
@@ -331,10 +357,10 @@ class FrontendController extends Controller
 
             // Vérifier si le client existe
             $customer = Customer::where('email', $validated['email'])->first();
-            
-            if (!$customer) {
-                Log::info('Création nouveau client pour email: ' . $validated['email']);
-                
+
+            if (! $customer) {
+                Log::info('Création nouveau client pour email: '.$validated['email']);
+
                 // Créer un utilisateur
                 $user = User::create([
                     'name' => $validated['name'],
@@ -345,7 +371,7 @@ class FrontendController extends Controller
                 ]);
 
                 // Conversion du genre
-                $genderValue = match($validated['gender']) {
+                $genderValue = match ($validated['gender']) {
                     'Homme', 'Masculin', 'M' => 'Male',
                     'Femme', 'Féminin', 'F' => 'Female',
                     default => 'Other'
@@ -362,10 +388,10 @@ class FrontendController extends Controller
                     'birthdate' => Carbon::parse($validated['birthdate'])->format('Y-m-d'),
                     'user_id' => $user->id,
                 ]);
-                
-                Log::info('Nouveau client créé avec ID: ' . $customer->id);
+
+                Log::info('Nouveau client créé avec ID: '.$customer->id);
             } else {
-                Log::info('Client existant trouvé avec ID: ' . $customer->id);
+                Log::info('Client existant trouvé avec ID: '.$customer->id);
             }
 
             // Créer la réservation
@@ -379,7 +405,7 @@ class FrontendController extends Controller
             ]);
 
             DB::commit();
-            
+
             Log::info('=== RÉSERVATION RÉUSSIE ===');
 
             return response()->json([
@@ -391,49 +417,51 @@ class FrontendController extends Controller
                     'check_in' => $checkIn->format('d/m/Y'),
                     'check_out' => $checkOut->format('d/m/Y'),
                     'nights' => $nights,
-                    'total_price' => number_format($totalPrice, 0, ',', ' ') . ' FCFA',
+                    'total_price' => number_format($totalPrice, 0, ',', ' ').' FCFA',
                     'room_number' => $room->number,
                     'room_name' => $room->name,
-                ]
+                ],
             ]);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             DB::rollBack();
             Log::error('ERREUR DE VALIDATION:', [
                 'errors' => $e->errors(),
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ]);
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'Veuillez vérifier les informations fournies.',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
-            
+
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
-            Log::error('ERREUR SQL: ' . $e->getMessage());
-            
+            Log::error('ERREUR SQL: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
                 'message' => 'Erreur de base de données. Veuillez réessayer.',
                 'debug_code' => $e->getCode(),
             ], 500);
-            
+
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('ERREUR RÉSERVATION: ' . $e->getMessage());
-            
+            Log::error('ERREUR RÉSERVATION: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Une erreur est survenue. Veuillez réessayer.'
+                'message' => 'Une erreur est survenue. Veuillez réessayer.',
             ], 500);
         }
     }
+
     // Afficher le formulaire de réservation
     public function reservationForm()
     {
         $roomTypes = Type::all();
+
         return view('frontend.pages.reservation', compact('roomTypes'));
     }
 
@@ -456,21 +484,21 @@ class FrontendController extends Controller
         try {
             // Envoyer un email à l'hôtel
             // Mail::to('reservations@cactushotel.com')->send(new ReservationRequestMail($validated));
-            
+
             // Sauvegarder dans une table "reservation_requests" si vous voulez
             // ReservationRequest::create($validated);
-            
+
             return response()->json([
                 'success' => true,
-                'message' => 'Votre demande de réservation a été envoyée avec succès. Nous vous contacterons dans les 24h pour confirmer votre séjour.'
+                'message' => 'Votre demande de réservation a été envoyée avec succès. Nous vous contacterons dans les 24h pour confirmer votre séjour.',
             ]);
-            
+
         } catch (\Exception $e) {
-            \Log::error('Erreur réservation: ' . $e->getMessage());
-            
+            \Log::error('Erreur réservation: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'Une erreur est survenue. Veuillez réessayer ou nous appeler directement.'
+                'message' => 'Une erreur est survenue. Veuillez réessayer ou nous appeler directement.',
             ], 500);
         }
     }

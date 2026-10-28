@@ -3,28 +3,31 @@
 @section('title', 'Nos Suites de Prestige - Morada Lodge')
 
 @section('content')
-    <!-- Hero Section pour les chambres -->
-    <section class="hero-section-rooms">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h1 class="display-4 mb-4">Nos Suites de Prestige</h1>
-                    <p class="lead mb-4">Chaque hébergement est conçu comme un havre de paix, alliant confort moderne et charme authentique africain</p>
-                    <div class="d-flex justify-content-center align-items-center gap-3">
-                        <span class="badge" style="background-color: var(--primary-brown); color: white; border-radius: 20px; padding: 8px 12px;">
-                            <i class="fas fa-bed me-1"></i>20 Chambres
-                        </span>
-                        <span class="badge bg-info">
-                            <i class="fas fa-check-circle me-1"></i>20 Disponibles
-                        </span>
-                        <span class="badge bg-warning">
-                            <i class="fas fa-star me-1"></i>15 Types
-                        </span>
-                    </div>
-                </div>
+
+    {{-- ══════════ EN-TÊTE DE PAGE ══════════ --}}
+    <section class="m-pagehead">
+        <div class="m-hero-media">
+            @php
+                $headPhoto = collect(['img/morada/head-chambres.jpg', 'img/morada/lodge-01.jpg', 'img/accueil.jpg'])->first(fn ($p) => is_file(public_path($p)));
+            @endphp
+            @if($headPhoto)
+                <img src="{{ asset($headPhoto) }}" alt="Chambres &amp; Suites" fetchpriority="high">
+            @endif
+        </div>
+        <div class="m-hero-scrim"></div>
+
+        <div class="m-shell" style="position:relative;z-index:2;padding-top:90px">
+            <span class="m-eyebrow is-center">Nos hébergements</span>
+            <h1>Chambres &amp; Suites</h1>
+            <p class="m-lead" style="margin-inline:auto;color:rgba(255,255,255,.82)">Chaque hébergement est pensé comme un havre de paix, entre confort contemporain et âme béninoise.</p>
+
+            <div class="m-crumb" style="margin-top:22px">
+                <a href="{{ route('frontend.home') }}">Accueil</a>
+                <span style="margin:0 10px;color:var(--m-gold)">/</span>Chambres
             </div>
         </div>
     </section>
+
 
     <!-- Section de filtres -->
     <section class="py-4" style="background-color: var(--warm-beige);">
@@ -155,195 +158,7 @@
 
             <!-- Grille / Liste -->
             <div id="rooms-grid" class="row g-4">
-                <!-- Bungalows Majestueux -->
-                <div class="col-lg-4 col-md-6 room-item" data-aos="fade-up" data-aos-delay="0">
-                    <div class="room-card-modern">
-                        <div class="room-image-wrapper">
-                            <img src="{{ asset('img/room/buglow.jpg') }}" 
-                                 alt="Bungalows Majestueux"
-                                 class="room-image"
-                                 onerror="this.onerror=null;this.src='{{ asset('img/default/default-room.png') }}';">
-                            <div class="room-status">
-                                <span class="status-badge premium">
-                                    <i class="fas fa-crown"></i> Premium
-                                </span>
-                            </div>
-                            <button class="wishlist-btn">
-                                <i class="far fa-heart"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="room-details">
-                            <div class="room-header">
-                                <div>
-                                    <h3 class="room-name">Bungalows Majestueux</h3>
-                                    <p class="room-type">Authenticité et Sérénité</p>
-                                </div>
-                                <span class="capacity-badge">
-                                    <i class="fas fa-user"></i> 2-4
-                                </span>
-                            </div>
-                            
-                            <p class="room-description">
-                                Authenticité et sérénité dans des hébergements traditionnels réinventés avec tout le confort moderne.
-                            </p>
-                            
-                            <div class="room-specs">
-                                <div class="spec-item">
-                                    <i class="fas fa-tree"></i>
-                                    <span>Terrasse privée avec vue jardin</span>
-                                </div>
-                                <div class="spec-item">
-                                    <i class="fas fa-snowflake"></i>
-                                    <span>Climatisation et ventilateur</span>
-                                </div>
-                                <div class="spec-item">
-                                    <i class="fas fa-bath"></i>
-                                    <span>Salle de bain privée luxueuse</span>
-                                </div>
-                            </div>
-                            
-                            <div class="room-footer">
-                                <div class="price-info">
-                                    <span class="price">125 000</span>
-                                    <span class="price-label">FCFA/nuit</span>
-                                </div>
-                                <a href="{{ route('frontend.contact') }}?room=Bungalows" class="btn-view">
-                                    Réserver
-                                    <i class="fas fa-arrow-right ms-2"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Chambre Confort -->
-                <div class="col-lg-4 col-md-6 room-item" data-aos="fade-up" data-aos-delay="100">
-                    <div class="room-card-modern">
-                        <div class="room-image-wrapper">
-                            <img src="{{ asset('img/room/lit.jpg') }}" 
-                                 alt="Chambre Confort"
-                                 class="room-image"
-                                 onerror="this.onerror=null;this.src='{{ asset('img/default/default-room.png') }}';">
-                            <div class="room-status">
-                                <span class="status-badge classic">
-                                    <i class="fas fa-star"></i> Classic
-                                </span>
-                            </div>
-                            <button class="wishlist-btn">
-                                <i class="far fa-heart"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="room-details">
-                            <div class="room-header">
-                                <div>
-                                    <h3 class="room-name">Chambre Confort</h3>
-                                    <p class="room-type">Élégance et Pratique</p>
-                                </div>
-                                <span class="capacity-badge">
-                                    <i class="fas fa-user"></i> 1-2
-                                </span>
-                            </div>
-                            
-                            <p class="room-description">
-                                Élégantes et pratiques, parfaites pour un séjour alliant simplicité et raffinement à prix accessible.
-                            </p>
-                            
-                            <div class="room-specs">
-                                <div class="spec-item">
-                                    <i class="fas fa-bed"></i>
-                                    <span>Lit queen size confortable</span>
-                                </div>
-                                <div class="spec-item">
-                                    <i class="fas fa-wifi"></i>
-                                    <span>Wi-Fi haut débit gratuit</span>
-                                </div>
-                                <div class="spec-item">
-                                    <i class="fas fa-tv"></i>
-                                    <span>Minibar et télévision HD</span>
-                                </div>
-                            </div>
-                            
-                            <div class="room-footer">
-                                <div class="price-info">
-                                    <span class="price">20 000</span>
-                                    <span class="price-label">FCFA/nuit</span>
-                                </div>
-                                <a href="{{ route('frontend.contact') }}?room=Confort" class="btn-view">
-                                    Réserver
-                                    <i class="fas fa-arrow-right ms-2"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Suite Présidentielle -->
-                <div class="col-lg-4 col-md-6 room-item" data-aos="fade-up" data-aos-delay="200">
-                    <div class="room-card-modern">
-                        <div class="room-image-wrapper">
-                            <img src="{{ asset('img/room/suite.jpg') }}" 
-                                 alt="Suite Présidentielle"
-                                 class="room-image"
-                                 onerror="this.onerror=null;this.src='{{ asset('img/default/default-room.png') }}';">
-                            <div class="room-status">
-                                <span class="status-badge prestige">
-                                    <i class="fas fa-gem"></i> Prestige
-                                </span>
-                            </div>
-                            <button class="wishlist-btn">
-                                <i class="far fa-heart"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="room-details">
-                            <div class="room-header">
-                                <div>
-                                    <h3 class="room-name">Suite Présidentielle</h3>
-                                    <p class="room-type">Prestige et Luxe</p>
-                                </div>
-                                <span class="capacity-badge">
-                                    <i class="fas fa-user"></i> 2-4
-                                </span>
-                            </div>
-                            
-                            <p class="room-description">
-                                L'expérience ultime du luxe avec vue panoramique, service personnalisé et prestations d'exception.
-                            </p>
-                            
-                            <div class="room-specs">
-                                <div class="spec-item">
-                                    <i class="fas fa-door-open"></i>
-                                    <span>Suite 2 pièces avec salon privé</span>
-                                </div>
-                                <div class="spec-item">
-                                    <i class="fas fa-mountain"></i>
-                                    <span>Balcon avec vue panoramique</span>
-                                </div>
-                                <div class="spec-item">
-                                    <i class="fas fa-concierge-bell"></i>
-                                    <span>Service de conciergerie 24h/24</span>
-                                </div>
-                            </div>
-                            
-                            <div class="room-footer">
-                                <div class="price-info">
-                                    <span class="price">250 000</span>
-                                    <span class="price-label">FCFA/nuit</span>
-                                </div>
-                                <a href="{{ route('frontend.contact') }}?room=Presidentielle" class="btn-view">
-                                    Réserver
-                                    <i class="fas fa-arrow-right ms-2"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Les autres chambres dynamiques restent ici -->
                 @forelse($rooms as $room)
-                @if($loop->index >= 3)
                 <div class="col-lg-4 col-md-6 room-item"
                      data-price="{{ $room->price }}"
                      data-name="{{ strtolower($room->name) }}"
@@ -392,7 +207,7 @@
                             <img src="{{ $imageUrl }}"
                                  class="card-img-top room-image"
                                  alt="{{ $room->name }}"
-                                 onerror="this.onerror=null; this.src='{{ asset('img/default/default-room.png') }}';"
+                                 onerror="this.onerror=null; this.src='{{ Helper::defaultRoomImage() }}';"
                                  style="height: 100%; width: 100%; object-fit: cover; transition: transform 0.5s ease;">
                             @if($room->images && $room->images->count() > 1)
                             <div style="position: absolute; bottom: 10px; right: 10px;">
@@ -547,7 +362,6 @@
 
                     </div>
                 </div>
-                @endif
                 @empty
                 <div class="col-12">
                     <div class="text-center py-5" style="background-color: var(--light-brown); border-radius: 10px;">

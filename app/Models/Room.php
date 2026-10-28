@@ -188,7 +188,7 @@ class Room extends Model
                 return $firstImage->getRoomImage();
             }
 
-            return $firstImage->url ?? asset('img/default/default-room.png');
+            return $firstImage->url ?? \App\Helpers\Helper::defaultRoomImage();
         }
 
         $image = $this->images()->first();
@@ -196,7 +196,7 @@ class Room extends Model
             return $image->getRoomImage();
         }
 
-        return asset('img/default/default-room.png');
+        return \App\Helpers\Helper::defaultRoomImage();
     }
 
     /**
@@ -1055,7 +1055,7 @@ class Room extends Model
     public function getImagesWithFallback()
     {
         if ($this->images->isEmpty()) {
-            return [['url' => asset('img/default/default-room.png'), 'alt' => $this->display_name]];
+            return [['url' => \App\Helpers\Helper::defaultRoomImage(), 'alt' => $this->display_name]];
         }
 
         return $this->images->map(function ($image) {

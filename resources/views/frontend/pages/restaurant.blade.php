@@ -3,17 +3,31 @@
 @section('title', 'Gastronomie - Morada Lodge')
 
 @section('content')
-    <!-- Hero Section -->
-    <section class="hero-section" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h1 class="display-4 mb-4">Gastronomie</h1>
-                    <p class="lead mb-4" style="font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 400; font-style: italic; color: #f8f9fa; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">Saveurs d'Afrique & du Monde</p>
-                </div>
+
+    {{-- ══════════ EN-TÊTE DE PAGE ══════════ --}}
+    <section class="m-pagehead">
+        <div class="m-hero-media">
+            @php
+                $headPhoto = collect(['img/morada/head-restaurant.jpg', 'img/morada/restaurant.jpg', 'img/morada/exp-restaurant.jpg'])->first(fn ($p) => is_file(public_path($p)));
+            @endphp
+            @if($headPhoto)
+                <img src="{{ asset($headPhoto) }}" alt="Gastronomie" fetchpriority="high">
+            @endif
+        </div>
+        <div class="m-hero-scrim"></div>
+
+        <div class="m-shell" style="position:relative;z-index:2;padding-top:90px">
+            <span class="m-eyebrow is-center">La table</span>
+            <h1>Gastronomie</h1>
+            <p class="m-lead" style="margin-inline:auto;color:rgba(255,255,255,.82)">Saveurs du Bénin et échappées du monde, préparées chaque jour avec les produits du marché de Covè.</p>
+
+            <div class="m-crumb" style="margin-top:22px">
+                <a href="{{ route('frontend.home') }}">Accueil</a>
+                <span style="margin:0 10px;color:var(--m-gold)">/</span>Restaurant
             </div>
         </div>
     </section>
+
 
     <!-- Présentation -->
     <section class="py-5">
@@ -97,254 +111,200 @@
         </div>
     </section>
 
-    <!-- Carte du Restaurant -->
-    <section class="py-5" style="background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);">
+    <!-- Carte du Restaurant (alimentée depuis le back-office) -->
+    <section class="py-5" id="menu" style="background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);">
         <div class="container">
             <div class="row">
                 <div class="col-lg-10 mx-auto">
-                    <!-- Carte principale -->
                     <div class="card border-0 shadow-xl" style="border-radius: 20px; overflow: hidden; background: white;">
-                        
-                        <!-- En-tête simple -->
+
                         <div class="text-center p-4" style="background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%); color: white;">
-                            <h1 class="mb-0" style="font-family: Arial, sans-serif; font-weight: bold; font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
+                            <h2 class="mb-0" style="font-family: Arial, sans-serif; font-weight: bold; font-size: 2rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">
                                 <i class="fas fa-utensils me-3"></i>MENU
-                            </h1>
+                            </h2>
                         </div>
 
                         <div class="card-body p-0">
-                            
-                            <!-- Mets Africains -->
-                            <div class="p-4" style="border-bottom: 1px solid #f0f0f0;">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="me-3">
-                                        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #8B4513; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-leaf" style="color: white;"></i>
-                                        </div>
-                                    </div>
-                                    <h3 class="mb-0" style="font-family: Arial, sans-serif; font-weight: bold; color: #8B4513; font-size: 1.4rem;">Mets Africains</h3>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">Amiwo au poulet</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Plat traditionnel à base de maïs avec poulet</p>
+                            {{-- Sections de la carte, dans l'ordre défini au back-office --}}
+                            @foreach($categories as $category)
+                                <div class="p-4" style="border-bottom: 1px solid #f0f0f0;">
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="me-3">
+                                            <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #8B4513; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas {{ $category->icon }}" style="color: white;"></i>
                                             </div>
-                                            <span class="badge" style="background-color: #8B4513; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">5.000 FCFA</span>
                                         </div>
+                                        <h3 class="mb-0" style="font-family: Arial, sans-serif; font-weight: bold; color: #8B4513; font-size: 1.4rem;">
+                                            {{ $category->name }}
+                                        </h3>
                                     </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">Atassi avec Dja</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Riz parfumé accompagné de sauce tomate</p>
-                                            </div>
-                                            <span class="badge" style="background-color: #8B4513; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">3.500 FCFA</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">Bomiwo au poulet</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Spécialité à base de pâte de maïs et poulet</p>
-                                            </div>
-                                            <span class="badge" style="background-color: #8B4513; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">5.500 FCFA</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">MAN au Télibo</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Plat signature du chef avec poisson fumé</p>
-                                            </div>
-                                            <span class="badge" style="background-color: #8B4513; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">6.000 FCFA</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Spécialités Européennes -->
-                            <div class="p-4" style="border-bottom: 1px solid #f0f0f0;">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="me-3">
-                                        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #8B4513; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-hamburger" style="color: white;"></i>
-                                        </div>
-                                    </div>
-                                    <h3 class="mb-0" style="font-family: Arial, sans-serif; font-weight: bold; color: #8B4513; font-size: 1.4rem;">Spécialités Européennes</h3>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">Spaghettis bolognaise</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Pâtes italiennes avec sauce à la viande maison</p>
-                                            </div>
-                                            <span class="badge" style="background-color: #8B4513; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">2.500 FCFA</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">Steak de bœuf</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Entrecôte grillée, frites et sauce au choix</p>
-                                            </div>
-                                            <span class="badge" style="background-color: #8B4513; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">4.500 FCFA</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Grillades & Fruits de Mer -->
-                            <div class="p-4" style="border-bottom: 1px solid #f0f0f0;">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="me-3">
-                                        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #8B4513; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-drumstick-bite" style="color: white;"></i>
-                                        </div>
-                                    </div>
-                                    <h3 class="mb-0" style="font-family: Arial, sans-serif; font-weight: bold; color: #8B4513; font-size: 1.4rem;">Grillades & Fruits de Mer</h3>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">Brochette de bœuf</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Brochettes marinées avec légumes grillés</p>
-                                            </div>
-                                            <span class="badge" style="background-color: #8B4513; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">4.000 FCFA</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">Brochette de poisson</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Brochettes de poisson frais et épices</p>
-                                            </div>
-                                            <span class="badge" style="background-color: #8B4513; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">4.500 FCFA</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">Poisson braisé</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Poisson entier grillé au feu de bois</p>
-                                            </div>
-                                            <span class="badge" style="background-color: #8B4513; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">4.500 FCFA</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">Gambas sautées à l'ail</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Crevettes géantes sautées à l'ail et persil</p>
-                                            </div>
-                                            <span class="badge" style="background-color: #8B4513; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">12.000 FCFA</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Restauration Rapide -->
-                            <div class="p-4" style="border-bottom: 1px solid #f0f0f0;">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="me-3">
-                                        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #8B4513; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-clock" style="color: white;"></i>
-                                        </div>
-                                    </div>
-                                    <h3 class="mb-0" style="font-family: Arial, sans-serif; font-weight: bold; color: #8B4513; font-size: 1.4rem;">Restauration Rapide</h3>
-                                </div>
-                                
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">Shawarma (poulet ou viande)</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Wrap garni de viande, légumes et sauce</p>
-                                            </div>
-                                            <span class="badge" style="background-color: #8B4513; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">2.000 FCFA</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">Burgers variés</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Selon l'inspiration du chef - demandez-nous</p>
-                                            </div>
-                                            <span class="badge" style="background-color: #6c757d; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">Sur commande</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                            <div>
-                                                <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">Frites au poulet</h5>
-                                                <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.9rem;">Frites croustillantes avec poulet pané</p>
-                                            </div>
-                                            <span class="badge" style="background-color: #8B4513; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold;">2.500 FCFA</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Salades Fraîches -->
-                            <div class="p-4" style="border-bottom: 1px solid #f0f0f0;">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="me-3">
-                                        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #8B4513; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-leaf" style="color: white;"></i>
-                                        </div>
-                                    </div>
-                                    <h3 class="mb-0" style="font-family: Arial, sans-serif; font-weight: bold; color: #8B4513; font-size: 1.4rem;">Salades Fraîches</h3>
-                                </div>
-                                <div class="p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                    <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.95rem;">Salades composées accompagnées de sauces maison — prix selon la carte du jour</p>
-                                </div>
-                            </div>
-
-                            <!-- Bar & Cocktails -->
-                            <div class="p-4" style="border-bottom: 1px solid #f0f0f0;">
-                                <div class="d-flex align-items-center mb-4">
-                                    <div class="me-3">
-                                        <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #8B4513; display: flex; align-items: center; justify-content: center;">
-                                            <i class="fas fa-glass-martini-alt" style="color: white;"></i>
-                                        </div>
-                                    </div>
-                                    <h3 class="mb-0" style="font-family: Arial, sans-serif; font-weight: bold; color: #8B4513; font-size: 1.4rem;">Bar & Cocktails</h3>
-                                </div>
-                                <div class="p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
-                                    <p class="mb-3" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.95rem;">Un large choix de boissons rafraîchissantes et cocktails originaux pour accompagner vos repas ou vos moments de détente.</p>
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <p class="mb-2" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">
-                                                <i class="fas fa-wine-glass me-2" style="color: #8B4513;"></i>Vins sélectionnés
-                                            </p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <p class="mb-2" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">
-                                                <i class="fas fa-cocktail me-2" style="color: #8B4513;"></i>Cocktails maison
-                                            </p>
-                                        </div>
+                                        @foreach($category->menus as $menu)
+                                            <div class="col-md-6 mb-3">
+                                                <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
+                                                    <div class="pe-3">
+                                                        <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">
+                                                            {{ $menu->name }}
+                                                        </h5>
+                                                        @if($menu->description)
+                                                            <p class="mb-0" style="font-family: Arial, sans-serif; color: #666; font-size: 0.9rem;">
+                                                                {{ $menu->description }}
+                                                            </p>
+                                                        @endif
+                                                    </div>
+                                                    <span class="badge" style="background-color: {{ $menu->price > 0 ? '#8B4513' : '#6c757d' }}; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold; white-space: nowrap;">
+                                                        {{ $menu->price_label }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        @endforeach
                                     </div>
                                 </div>
-                            </div>
+                            @endforeach
 
-                            <!-- Ambiance Festive -->
-                            <div class="p-4" style="border-bottom: 1px solid #f0f0f0;">
-                                <div class="d-flex align-items-center mb-4">
+                            {{-- Plats pas encore classés : ils restent visibles plutôt que de disparaître --}}
+                            @if($uncategorized->isNotEmpty())
+                                <div class="p-4" style="border-bottom: 1px solid #f0f0f0;">
+                                    <div class="d-flex align-items-center mb-4">
+                                        <div class="me-3">
+                                            <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #8B4513; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-utensils" style="color: white;"></i>
+                                            </div>
+                                        </div>
+                                        <h3 class="mb-0" style="font-family: Arial, sans-serif; font-weight: bold; color: #8B4513; font-size: 1.4rem;">
+                                            Autres suggestions
+                                        </h3>
+                                    </div>
+
+                                    <div class="row">
+                                        @foreach($uncategorized as $menu)
+                                            <div class="col-md-6 mb-3">
+                                                <div class="d-flex justify-content-between align-items-start p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
+                                                    <div class="pe-3">
+                                                        <h5 class="mb-1" style="font-family: Arial, sans-serif; font-weight: bold; color: black; font-size: 1rem;">
+                                                            {{ $menu->name }}
+                                                        </h5>
+                                                        @if($menu->description)
+                                                            <p class="mb-0" style="font-family: Arial, sans-serif; color: #666; font-size: 0.9rem;">
+                                                                {{ $menu->description }}
+                                                            </p>
+                                                        @endif
+                                                    </div>
+                                                    <span class="badge" style="background-color: {{ $menu->price > 0 ? '#8B4513' : '#6c757d' }}; color: white; padding: 8px 12px; border-radius: 20px; font-weight: bold; white-space: nowrap;">
+                                                        {{ $menu->price_label }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                            @if($categories->isEmpty() && $uncategorized->isEmpty())
+                                <div class="p-5 text-center">
+                                    <i class="fas fa-utensils fa-3x mb-3" style="color: #d2b48c;"></i>
+                                    <h4 style="color: #8B4513; font-weight: bold;">Notre carte arrive bientôt</h4>
+                                    <p class="text-muted mb-0">
+                                        Contactez-nous pour connaître les plats du jour et nos suggestions du chef.
+                                    </p>
+                                </div>
+                            @endif
+
+
+                            <div class="p-4">
+                                <div class="d-flex align-items-center mb-3">
                                     <div class="me-3">
                                         <div style="width: 40px; height: 40px; border-radius: 50%; background-color: #8B4513; display: flex; align-items: center; justify-content: center;">
                                             <i class="fas fa-music" style="color: white;"></i>
                                         </div>
                                     </div>
-                                    <h3 class="mb-0" style="font-family: Arial, sans-serif; font-weight: bold; color: #8B4513; font-size: 1.4rem;">Ambiance Festive</h3>
+                                    <h3 class="mb-0" style="font-family: Arial, sans-serif; font-weight: bold; color: #8B4513; font-size: 1.4rem;">Ambiance festive</h3>
                                 </div>
-                                    <p class="mb-0" style="font-family: Arial, sans-serif; font-weight: normal; color: #666; font-size: 0.95rem;">Profitez d'un barbecue ou d'un chili entre amis autour de la piscine, dans une ambiance conviviale et musicale.</p>
+                                <div class="p-3" style="background-color: #fafafa; border-radius: 10px; border-left: 4px solid #8B4513;">
+                                    <p class="mb-0" style="font-family: Arial, sans-serif; color: #666; font-size: 0.95rem;">
+                                        Profitez d'un barbecue ou d'un chili entre amis autour de la piscine,
+                                        dans une ambiance conviviale et musicale.
+                                    </p>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Réservation de table -->
+    <section class="py-5" id="reserver-table">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="text-center mb-4">
+                        <h2 style="font-family: Arial, sans-serif; font-weight: bold; color: #8B4513;">
+                            Réserver une table
+                        </h2>
+                        <p class="text-muted">
+                            Indiquez-nous votre créneau : nous vous rappelons pour confirmer.
+                        </p>
+                    </div>
+
+                    <div class="card border-0 shadow" style="border-radius: 18px;">
+                        <div class="card-body p-4">
+                            <div id="tableReservationAlert"></div>
+
+                            <form id="tableReservationForm">
+                                @csrf
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="tr-name">Nom complet *</label>
+                                        <input type="text" class="form-control" id="tr-name" name="name" required maxlength="255">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="tr-phone">Téléphone *</label>
+                                        <input type="text" class="form-control" id="tr-phone" name="phone" required maxlength="30">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="tr-email">Email</label>
+                                        <input type="email" class="form-control" id="tr-email" name="email" maxlength="255">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="tr-persons">Nombre de personnes *</label>
+                                        <input type="number" class="form-control" id="tr-persons" name="persons"
+                                               min="1" max="20" value="2" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="tr-date">Date *</label>
+                                        <input type="date" class="form-control" id="tr-date" name="date"
+                                               min="{{ now()->format('Y-m-d') }}" value="{{ now()->format('Y-m-d') }}" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="tr-time">Heure *</label>
+                                        <input type="time" class="form-control" id="tr-time" name="time" value="19:30" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label" for="tr-table">Type de table</label>
+                                        <select class="form-select" id="tr-table" name="table_type">
+                                            <option value="">Sans préférence</option>
+                                            <option value="Intérieur">Intérieur</option>
+                                            <option value="Terrasse">Terrasse</option>
+                                            <option value="Vue jardin">Vue jardin</option>
+                                            <option value="Privatisée">Privatisée</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label" for="tr-notes">Demandes particulières</label>
+                                        <textarea class="form-control" id="tr-notes" name="notes" rows="3"
+                                                  maxlength="1000" placeholder="Allergies, occasion spéciale…"></textarea>
+                                    </div>
+                                    <div class="col-12 text-center">
+                                        <button type="submit" class="btn btn-lg px-5" id="tr-submit"
+                                                style="background-color: #8B4513; color: white; border-radius: 30px;">
+                                            <i class="fas fa-calendar-check me-2"></i>Envoyer ma demande
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -357,6 +317,41 @@
     @push('scripts')
     <script>
     $(document).ready(function() {
+        // Réservation de table : envoi sans quitter la page
+        $('#tableReservationForm').on('submit', function (e) {
+            e.preventDefault();
+
+            const $form = $(this);
+            const $button = $('#tr-submit').prop('disabled', true)
+                .html('<i class="fas fa-spinner fa-spin me-2"></i>Envoi…');
+
+            $.ajax({
+                url: '{{ route('restaurant.reservation.store') }}',
+                type: 'POST',
+                data: $form.serialize(),
+                headers: { 'Accept': 'application/json' },
+                success: function (res) {
+                    $('#tableReservationAlert').html(
+                        '<div class="alert alert-success">' + res.message + '</div>'
+                    );
+                    $form[0].reset();
+                },
+                error: function (xhr) {
+                    let message = "Une erreur est survenue. Veuillez réessayer.";
+                    if (xhr.status === 422 && xhr.responseJSON && xhr.responseJSON.errors) {
+                        message = Object.values(xhr.responseJSON.errors).flat().join('<br>');
+                    } else if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    $('#tableReservationAlert').html('<div class="alert alert-danger">' + message + '</div>');
+                },
+                complete: function () {
+                    $button.prop('disabled', false)
+                        .html('<i class="fas fa-calendar-check me-2"></i>Envoyer ma demande');
+                }
+            });
+        });
+
         // Filtrage des menus
         $('.category-filter').click(function() {
             $('.category-filter').removeClass('active');

@@ -13,6 +13,49 @@ class Helper
     const CFA_EXCHANGE_RATE = 655.957;
 
     /**
+     * Resout la premiere photo existante parmi plusieurs candidats.
+     *
+     * Permet aux vues de savoir si une section illustree a de quoi s'afficher,
+     * et de basculer sur une variante sans photo le cas echeant.
+     *
+     * @param  string|array  $candidates  chemins relatifs a /public ou URL absolues
+     * @return string|null   URL utilisable, ou null si aucune photo disponible
+     */
+    public static function photo($candidates)
+    {
+        foreach ((array) $candidates as $candidate) {
+            if (! $candidate) {
+                continue;
+            }
+
+            if (Str::startsWith($candidate, ['http://', 'https://', '//'])) {
+                return $candidate;
+            }
+
+            $relative = ltrim($candidate, '/');
+            if (is_file(public_path($relative))) {
+                return asset($relative);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Image de repli des chambres, avec empreinte de version.
+     *
+     * L'empreinte change des que le fichier est remplace : les navigateurs
+     * qui gardaient l'ancienne plaque en cache rechargent automatiquement.
+     */
+    public static function defaultRoomImage()
+    {
+        $chemin = 'img/default/default-room.png';
+        $version = @filemtime(public_path($chemin)) ?: 1;
+
+        return asset($chemin).'?v='.$version;
+    }
+
+    /**
      * Formater un montant en Francs CFA
      */
     public static function formatCFA($amount, $decimals = 0, $showSymbol = true)
