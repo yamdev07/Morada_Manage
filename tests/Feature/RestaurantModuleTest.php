@@ -100,12 +100,21 @@ class RestaurantModuleTest extends TestCase
 
     public function test_la_carte_affiche_les_plats(): void
     {
-        $menu = $this->menu(['name' => 'Amiwo de test']);
+        // La carte est paginee (12 plats par page) et triee par categorie.
+        // Sur une base vide le plat de test tombe forcement sur la premiere
+        // page, mais des que les seeders sont passes (16 plats, comme en CI)
+        // il part en page 2 et l'assertion echoue a tort.
+        // On le cherche donc explicitement : le test porte sur l'affichage
+        // de la carte, pas sur le rang du plat dans la pagination.
+        $nom = 'Amiwo de test '.uniqid();
 
-        $response = $this->actingAs($this->admin())->get('/restaurant/menus');
+        $menu = $this->menu(['name' => $nom]);
+
+        $response = $this->actingAs($this->admin())
+            ->get('/restaurant/menus?search='.urlencode($nom));
 
         $response->assertOk();
-        $response->assertSee('Amiwo de test');
+        $response->assertSee($nom);
         $this->assertNotNull($menu->id);
     }
 
