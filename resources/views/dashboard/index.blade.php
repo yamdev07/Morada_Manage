@@ -611,6 +611,9 @@
         </div>
     </div>
 
+    {{-- ─── VUE D'ENSEMBLE : occupation, semaine, plan ─── --}}
+    @include('dashboard.partials.hero')
+
     {{-- ─── STAT CARDS ──────────────────────────── --}}
     <div class="stats-grid anim-2">
 

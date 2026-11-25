@@ -30,6 +30,13 @@
     <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
     {{-- Styles spécifiques aux pages --}}
+    {{-- Police d'affichage et identité visuelle Morada --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+    @php $adminCssV = @filemtime(public_path('css/morada-admin.css')) ?: 1; @endphp
+    <link rel="stylesheet" href="{{ asset('css/morada-admin.css') }}?v={{ $adminCssV }}">
+
     @stack('styles')
     
     <title>@yield('title') - Morada Lodge Admin</title>

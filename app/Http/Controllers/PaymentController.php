@@ -231,6 +231,54 @@ class PaymentController extends Controller
 
         try {
             // =====================================================
+            // 2bis. VERROU ANTI DOUBLE ENCAISSEMENT
+            // =====================================================
+            // La validation ci-dessus a lu le solde AVANT d'ouvrir la
+            // transaction SQL. Deux caissiers qui encaissent en même temps
+            // peuvent donc valider chacun sur le même solde et faire
+            // dépasser le montant dû.
+            //
+            // On reverrouille la réservation et on recalcule le solde ICI,
+            // à l'intérieur de la transaction : la seconde requête attend la
+            // première, puis travaille sur le solde réellement à jour.
+            $transaction = Transaction::whereKey($transaction->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $resteDu = (float) $transaction->getRemainingPayment();
+            $montant = (float) $validated['amount'];
+
+            // Tolérance de 100 FCFA : elle existe déjà dans la validation
+            // ci-dessus, on la conserve pour ne pas changer la règle métier.
+            if ($montant > $resteDu + 100) {
+                DB::rollBack();
+
+                Log::warning('Paiement refusé : le solde a changé entre-temps', [
+                    'transaction_id' => $transaction->id,
+                    'montant_demande' => $montant,
+                    'reste_du_reel' => $resteDu,
+                    'user_id' => auth()->id(),
+                ]);
+
+                $message = $resteDu <= 0
+                    ? 'Cette réservation vient d\'être soldée par un autre encaissement.'
+                    : 'Le solde a changé : il ne reste que '
+                        .number_format($resteDu, 0, ',', ' ').' FCFA à encaisser.';
+
+                if ($request->ajax() || $request->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $message,
+                        'remaining' => $resteDu,
+                    ], 409);
+                }
+
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', $message);
+            }
+
+            // =====================================================
             // 3. DÉTERMINER LE USER_ID VALIDE
             // =====================================================
             $userId = $this->getValidUserId();

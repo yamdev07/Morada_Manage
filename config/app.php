@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'Africa/Lagos',
+    'timezone' => 'Africa/Porto-Novo',
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
@@ -79,7 +79,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'fr',
 
     /*
     |--------------------------------------------------------------------------

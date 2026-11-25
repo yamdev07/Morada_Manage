@@ -1,6 +1,6 @@
 @extends('frontend.layouts.master')
 
-@section('title', $room->name . ' - Hôtel Cactus Palace')
+@section('title', $room->name.' — Morada Lodge')
 
 @section('content')
     <!-- Hero Section avec l'image principale en fond -->
@@ -83,7 +83,7 @@
                         @foreach($room->images as $index => $image)
                             @php
                                 $thumbPath = 'img/room/' . $room->number . '/' . $image->url;
-                                $thumbUrl = file_exists(public_path($thumbPath)) ? asset($thumbPath) : asset('img/default/default-room.png');
+                                $thumbUrl = file_exists(public_path($thumbPath)) ? asset($thumbPath) : Helper::defaultRoomImage();
                             @endphp
                             <div class="col-3">
                                 <img src="{{ $thumbUrl }}" 
@@ -253,7 +253,7 @@
                     <div class="room-card-similar">
                         <div class="room-card-image">
                             @php
-                                $relatedImage = asset('img/default/default-room.png');
+                                $relatedImage = Helper::defaultRoomImage();
                                 if($relatedRoom->images && $relatedRoom->images->count() > 0) {
                                     $testPath = 'img/room/' . $relatedRoom->number . '/' . $relatedRoom->images->first()->url;
                                     if(file_exists(public_path($testPath))) {

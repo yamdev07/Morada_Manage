@@ -3,17 +3,31 @@
 @section('title', 'Contact - Morada Lodge')
 
 @section('content')
-    <!-- Hero Section Contact -->
-    <section class="hero-section-contact">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h1 class="display-4 mb-4">Contact</h1>
-                    <p class="lead mb-4">Réservez votre Séjour d'Exception</p>
-                </div>
+
+    {{-- ══════════ EN-TÊTE DE PAGE ══════════ --}}
+    <section class="m-pagehead">
+        <div class="m-hero-media">
+            @php
+                $headPhoto = collect(['img/morada/head-contact.jpg', 'img/morada/entree.jpg', 'img/accueil.jpg'])->first(fn ($p) => is_file(public_path($p)));
+            @endphp
+            @if($headPhoto)
+                <img src="{{ asset($headPhoto) }}" alt="Contact" fetchpriority="high">
+            @endif
+        </div>
+        <div class="m-hero-scrim"></div>
+
+        <div class="m-shell" style="position:relative;z-index:2;padding-top:90px">
+            <span class="m-eyebrow is-center">Nous écrire</span>
+            <h1>Contact</h1>
+            <p class="m-lead" style="margin-inline:auto;color:rgba(255,255,255,.82)">Une question, une demande particulière, un événement à organiser : nous répondons vite.</p>
+
+            <div class="m-crumb" style="margin-top:22px">
+                <a href="{{ route('frontend.home') }}">Accueil</a>
+                <span style="margin:0 10px;color:var(--m-gold)">/</span>Contact
             </div>
         </div>
     </section>
+
 
     <!-- Messages de succès/erreur -->
     @if(session('success'))

@@ -57,6 +57,32 @@ class Type extends Model
         return number_format($this->base_price, 0, ',', ' ').' FCFA';
     }
 
+    /**
+     * Prix affiché sur le site vitrine : le tarif le plus bas des chambres
+     * de ce type (saisi dans le back-office), sinon le prix de base du type.
+     */
+    public function getDisplayPriceAttribute()
+    {
+        $rooms = $this->relationLoaded('rooms') ? $this->rooms : $this->rooms()->get();
+        $min = $rooms->min('price');
+
+        if ($min !== null) {
+            return (float) $min;
+        }
+
+        return $this->base_price ? (float) $this->base_price : null;
+    }
+
+    /**
+     * Vrai si les chambres de ce type n'ont pas toutes le même tarif.
+     */
+    public function getHasPriceRangeAttribute()
+    {
+        $rooms = $this->relationLoaded('rooms') ? $this->rooms : $this->rooms()->get();
+
+        return $rooms->pluck('price')->unique()->count() > 1;
+    }
+
     public function getAmenitiesListAttribute()
     {
         if (! $this->amenities) {

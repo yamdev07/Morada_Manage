@@ -9,12 +9,12 @@
         <div class="d-flex align-items-center">
             <div class="">
                 <img src="{{ asset('img/logo/logo_ancien.jpg') }}"
-                    alt="Hotel Cactus"
+                    alt="Morada Lodge"
                     style="height: 42px; border-radius: 8px;">
             </div>
             <div class="brand-text ms-2">
-                <span class="brand-name">Hotel Management</span>
-                <small class="brand-subtitle d-block">Gestion Hôtelière</small>
+                <span class="brand-name">Morada Lodge</span>
+                <small class="brand-subtitle d-block">Administration</small>
             </div>
         </div>
         <button id="toggle-sidebar" class="btn btn-icon">
@@ -171,7 +171,7 @@
                         </div>
                         <div class="nav-content">
                             <div class="nav-title">Restaurant</div>
-                            <div class="nav-subtitle">Menus & Commandes</div>
+                            <div class="nav-subtitle">Service, commandes & tables</div>
                         </div>
                     </a>
                     @endif

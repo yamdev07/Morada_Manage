@@ -121,8 +121,65 @@ class DashboardController extends Controller
         ? round(($occupiedRoomsCount / $totalRoomsCount) * 100, 2)
         : 0;
 
+    // --- Arrivees et departs a J+1 et J+2 (ils etaient affiches mais jamais calcules) ---
+    $tomorrow = $today->copy()->addDay();
+    $day2 = $today->copy()->addDays(2);
+
+    $compterArrivees = fn ($date) => Transaction::whereDate('check_in', $date)
+        ->whereIn('status', ['reservation', 'active'])
+        ->count();
+
+    $compterDeparts = fn ($date) => Transaction::whereDate('check_out', $date)
+        ->whereIn('status', ['reservation', 'active'])
+        ->count();
+
+    // --- Plan des chambres : etat de chaque chambre, pour la vue d'ensemble ---
+    $roomMap = Room::with('roomStatus')
+        ->orderByRaw('CAST(number AS UNSIGNED), number')
+        ->get()
+        ->map(function ($room) use ($today) {
+            $sejour = Transaction::with('customer')
+                ->where('room_id', $room->id)
+                ->where('status', 'active')
+                ->whereDate('check_in', '<=', $today)
+                ->whereDate('check_out', '>=', $today)
+                ->first();
+
+            return [
+                'number' => $room->number,
+                'name' => $room->name,
+                'statusId' => $room->room_status_id,
+                'occupee' => (bool) $sejour,
+                'client' => $sejour->customer->name ?? null,
+                'depart' => $sejour ? Carbon::parse($sejour->check_out)->format('d/m') : null,
+            ];
+        });
+
+    // --- Occupation des 7 derniers jours, pour la courbe ---
+    $totalRoomsForWeek = max($totalRoomsCount, 1);
+    $weekOccupancy = collect(range(6, 0))->map(function ($recul) use ($totalRoomsForWeek) {
+        $jour = Carbon::today()->subDays($recul);
+
+        $occupees = Transaction::where('status', '!=', 'cancelled')
+            ->whereDate('check_in', '<=', $jour)
+            ->whereDate('check_out', '>=', $jour)
+            ->distinct('room_id')
+            ->count('room_id');
+
+        return [
+            'jour' => $jour->locale('fr')->isoFormat('ddd'),
+            'date' => $jour->format('d/m'),
+            'taux' => (int) round(($occupees / $totalRoomsForWeek) * 100),
+            'nb' => $occupees,
+        ];
+    });
+
     $stats = [
         'activeGuests' => $activeTransactions,
+        'tomorrowArrivals' => $compterArrivees($tomorrow),
+        'tomorrowDepartures' => $compterDeparts($tomorrow),
+        'day2Arrivals' => $compterArrivees($day2),
+        'day2Departures' => $compterDeparts($day2),
         'completedToday' => $completedTodayCount,
         'pendingPayments' => $pendingPaymentsCount,
         'urgentPayments' => $urgentPaymentsCount,
@@ -139,7 +196,7 @@ class DashboardController extends Controller
         'statusFilter' => $statusFilter,
     ];
 
-    return view('dashboard.index', compact('transactions', 'stats'));
+    return view('dashboard.index', compact('transactions', 'stats', 'roomMap', 'weekOccupancy'));
 }
 
     /**
