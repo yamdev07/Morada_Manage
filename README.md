@@ -75,9 +75,9 @@ This workflow ensures room availability consistency and operational tracking.
 
 | Layer | Technology |
 |------|------|
-| Backend | Laravel (PHP) |
+| Backend | Laravel 12 (PHP 8.2+, testé sur 8.3 et 8.4) |
 | Frontend | Blade + Bootstrap 5 |
-| Database | MySQL |
+| Database | MySQL 8 / MariaDB |
 | Build Tool | Vite |
 | Authentication | Laravel Auth |
 | Server | Apache / Nginx |
@@ -113,7 +113,7 @@ Password: password123
 ## Installation
 
 ### Requirements
-- PHP >= 8.1
+- PHP >= 8.2  (la CI valide 8.3 et 8.4)
 - Composer
 - MySQL / MariaDB
 - Node.js & npm
